@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山城淘金夢醒時：文山溪的呼喚</title>
+    <style>
+        /* CSS 樣式 */
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            background-color: #f0f8ff; /* 淺藍色背景 */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        #game-container {
+            width: 100%;
+            max-width: 850px; /* 稍微寬一點以容納角色卡 */
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #004d99;
+            text-align: center;
+            border-bottom: 3px solid #004d99;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #cc5200;
+            margin-top: 25px;
+        }
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .start-screen, .final-screen, #select-role-screen {
+            text-align: center;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover:not(.disabled) {
+            background-color: #0056b3;
+        }
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        /* 角色選擇卡片 */
+        #role-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .role-card {
+            border: 2px solid #007bff;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e6f7ff;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: left;
+        }
+        .role-card:hover {
+            background-color: #cce7ff;
+            transform: translateY(-3px);
+        }
+        .role-card.selected {
+            border-color: #cc5200;
+            background-color: #ffe6cc;
+            box-shadow: 0 0 10px rgba(204, 82, 0, 0.5);
+        }
+        .role-card h3 {
+            color: #004d99;
+            border-bottom: 1px dashed #004d99;
+            margin-top: 0;
+            padding-bottom: 5px;
+        }
+
+        /* 遊戲畫面樣式 */
+        .question-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            background-color: #f7f7f7;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+        .options-list li {
+            background-color: #e9ecef;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .options-list li:hover:not(.disabled) {
+            background-color: #d1d9e0;
+        }
+        .options-list li.correct-answer { background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .options-list li.wrong-answer { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .ability-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .ability-btn {
+            background-color: #ffc107;
+            color: #333;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .fragment {
+            color: #cc5200;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        #player-role-display {
+            background-color: #f0fff0;
+            border: 1px solid #d4edda;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <h1>山城淘金夢醒時：文山溪的呼喚</h1>
+        <p><em>— 偵查山城的環境危機 —</em></p>
+
+        <div id="start-screen" class="screen">
+            <h2>📜 劇情啟動</h2>
+            <p style="padding: 15px; border: 1px dashed #999;">
+                「石碇，不只是茶鄉，它曾是閃耀的煤礦之城。然而，淘金夢醒，環境留下了傷痕。你，是<strong>『山城復甦行動組』</strong>的成員，你的任務是響應文山溪發出的<strong>『異常訊號』</strong>。訊號中夾雜著舊時礦工的暗語：<strong>『欲淨水脈，須解舊夢。』</strong> 你必須追溯文山煤礦的興衰歷程，找出影響溪流生態的**『三大病灶』**，拼湊出完整的**生態修復行動方案**！」
+            </p>
+            <p><strong>任務目標：</strong> 通過三道關卡，收集【修復行動碎片】，解鎖最終的實地行動。</p>
+            <button class="btn" onclick="showRoleSelection()">開始偵查行動</button>
+        </div>
+
+        <div id="select-role-screen" class="screen">
+            <h2>👤 選擇你的角色身份</h2>
+            <p>請選擇你在此次「山城復甦行動組」中將扮演的身份，你的角色能力將在關鍵時刻助你一臂之力。</p>
+            <div id="role-selection-grid">
+                </div>
+            <button class="btn disabled" id="confirm-role-btn" onclick="confirmRoleSelection()">確認選擇，進入第一關 &raquo;</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div id="player-role-display">
+                </div>
+
+            <h2 id="stage-title">關卡標題</h2>
+            <p><strong>進度：</strong> <span id="progress-text"></span></p>
+
+            <div id="question-area" class="question-box">
+                <p><strong>問號</strong> <span id="current-q-index"></span></p>
+                <p id="question-text"></p>
+                <ul id="options-list" class="options-list">
+                    </ul>
+                <div id="ability-ui" class="ability-box">
+                    <strong>角色專長：</strong>
+                    <span id="current-ability"></span>
+                    <button class="ability-btn" onclick="useAbility()">使用專長 (本關限用一次)</button>
+                    <p style="font-size: 0.9em; margin: 5px 0 0;">(注: 使用後，將獲得額外提示或排除錯誤選項。)</p>
+                </div>
+            </div>
+
+            <div id="message"></div>
+            <button class="btn disabled" id="next-q-btn" onclick="nextQuestion()">下一題 &raquo;</button>
+        </div>
+
+        <div id="final-screen" class="screen">
+            <h2>🎉 關卡四：行動 - 不見天下的轉型藍圖</h2>
+            <p><strong>恭喜！</strong>你已成功偵查並收集到完整的<span class="fragment">【轉型方案】</span>、<span class="fragment">【修復技術】</span>與<span class="fragment">【協力網絡】</span>三張碎片，拼湊出**「石碇復甦藍圖」**！</p>
+
+            <div style="background-color: #e9f7e9; padding: 20px; border: 2px solid #38761d; border-radius: 10px; margin-top: 20px;">
+                <h3>🔥 最終任務指令（實地應用）</h3>
+                <p>現在，你必須前往具歷史意義的<strong>石碇不見天街</strong>（或進行虛擬觀察），觀察該場域的空間設計智慧，並將你設計的「石碇復甦藍圖」具體化：</p>
+                <p><strong>設計一個結合遺址活化、生態復育、社區協力元素的遊戲化行動方案</strong>（例如：一個實地導覽路線圖、一個生態教育展板設計、或一份社區倡議報告）。</p>
+                <p>將最終成果透過網路平台公開分享，發佈地方行動倡議，完成山城復甦行動！</p>
+            </div>
+            <p style="margin-top: 20px; font-style: italic;">感謝你為石碇山城與文山溪所做的努力！</p>
+        </div>
+
+    </div>
+
+    <script>
+        // JavaScript 邏輯
+        const gameData = {
+            roles: {
+                '溪哥': { key: '溪哥', name: '🔍 生態調查員-溪哥', ability: '【水脈診斷】排除兩個錯誤選項', field: '溪流生態與污染源', specialtyQ: ['2-3', '2-5', '3-3'] },
+                '阿文': { key: '阿文', name: '📜 社區記錄者-阿文', ability: '【時光訪談】獲得關鍵詞彙或記憶碎片', field: '礦工文化與聚落記憶', specialtyQ: ['1-3', '3-1', '1-4'] },
+                '阿路': { key: '阿路', name: '🗺️ 地方導覽員-阿路', ability: '【遺址重建】釐清空間結構或舊地圖資訊', field: '遺址活化與地貌變遷', specialtyQ: ['1-2', '3-4', '3-5'] },
+                '小雅': { key: '小雅', name: '💡 生態設計師-小雅', ability: '【永續分析】確認最佳行動方向或SDGs目標', field: '永續發展與社區振興', specialtyQ: ['1-1', '1-5', '2-2'] }
+            },
+            stages: [
+                {
+                    id: 0,
+                    title: '關卡一：病灶 1️⃣ - 淘金夢的鏽蝕 (產業的傷痕)',
+                    fragment: '【轉型方案】碎片 1/3',
+                    requiredAbilityQ: ['1-5'], // 啟用能力的題目編號
+                    questions: [
+                        { q: '1-1. 台灣煤礦產業在 1970-1980 年代沒落，最主要的原因是什麼？', options: ['A. 礦工人口外移。', 'B. 技術無法突破。', 'C. 全球能源結構改變，進口煤炭成本更低。', 'D. 政策禁止發電用煤。'], answer: 'C', abilityQ: false },
+                        { q: '1-2. 文山煤礦遺址作為歷史記憶保存與轉型活化的空間，最符合下列哪一種概念？', options: ['A. 商業購物中心。', 'B. 高科技研究園區。', 'C. 生態博物館或文化基地。', 'D. 豪華旅遊度假村。'], answer: 'C', abilityQ: false },
+                        { q: '1-3. 依據礦工的口述歷史，當時石碇煤礦產區的礦工宿舍最常使用的建築材料是？', options: ['A. 現代鋼筋混凝土。', 'B. 當地的石材和木料搭建的簡易工寮。', 'C. 進口的玻璃纖維。', 'D. 精緻的紅磚瓦房。'], answer: 'B', abilityQ: false },
+                        { q: '1-4. 煤礦落幕後，礦區聚落面臨的最大社會議題是？', options: ['A. 觀光客過多，環境髒亂。', 'B. 產業過度集中，經濟泡沫化。', 'C. 人口外流與結構老化。', 'D. 土地無法進行農業開發。'], answer: 'C', abilityQ: false },
+                        { q: '1-5. 探究煤礦產業的興盛過程，其技術演進主要帶動了下列哪個領域的發展？', options: ['A. 精密電子工業。', 'B. 蒸汽動力與鐵路運輸。', 'C. 醫療生技產業。', 'D. 航太飛行技術。'], answer: 'B', abilityQ: true }
+                    ]
+                },
+                {
+                    id: 1,
+                    title: '關卡二：病灶 2️⃣ - 溪流的黃色警報 (環境的毒害)',
+                    fragment: '【修復技術】碎片 2/3',
+                    requiredAbilityQ: ['2-3'],
+                    questions: [
+                        { q: '2-1. 煤礦開採對溪流水質最常見的污染類型，除了重金屬外，還包含哪一種？', options: ['A. 塑膠微粒污染。', 'B. 有機肥料殘留。', 'C. 輻射物質污染。', 'D. 酸性廢水或煤渣瀝濾水。'], answer: 'D', abilityQ: false },
+                        { q: '2-2. 文山溪的棲地多樣性恢復，對哪個SDG目標實踐最直接相關？', options: ['A. SDG 8 (尊嚴工作)。', 'B. SDG 15 (陸地生態)。', 'C. SDG 4 (優質教育)。', 'D. SDG 6 (淨水與衛生)。'], answer: 'B', abilityQ: false },
+                        { q: '2-3. 根據水脈診斷結果，溪流生態復育的目標之一是恢復棲地多樣性。這主要指要讓溪流中具備哪種特徵的區域？', options: ['A. 只有筆直的水泥河岸。', 'B. 只有單一深度與流速的區域。', 'C. 具有多樣的底質、水深和流速的區域。', 'D. 專門設立的觀賞魚養殖區。'], answer: 'C', abilityQ: true },
+                        { q: '2-4. 礦區周邊大量堆積的廢土與煤渣，在下雨時最容易造成溪流的哪種環境問題？', options: ['A. 溫室效應。', 'B. 泥沙淤積與水質濁度增加。', 'C. 臭氧層破洞。', 'D. 溪水溫度急劇下降。'], answer: 'B', abilityQ: false },
+                        { q: '2-5. 在石碇溪流生態中，下列哪一種生物常被視為水質優良的環境指標物種？', options: ['A. 污染耐受性高的鯉魚。', 'B. 對水質要求高的石斑或水生昆蟲。', 'C. 棲息於髒水溝的蟑螂。', 'D. 喜歡高鹽度的海鳥。'], answer: 'B', abilityQ: false }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: '關卡三：病灶 3️⃣ - 人心的斷裂帶 (社區的困境)',
+                    fragment: '【協力網絡】碎片 3/3',
+                    requiredAbilityQ: ['3-1'],
+                    questions: [
+                        { q: '3-1. 在礦工聚落的口述追溯中，老礦工時常提及的「礦工精神」核心價值為何？', options: ['A. 追求個人財富最大化。', 'B. 「雞籠養雞，大家呷飯」的互助合作精神。', 'C. 嚴格的階級制度。', 'D. 絕對服從工頭命令。'], answer: 'B', abilityQ: true },
+                        { q: '3-2. 地方推動社區總體營造，目的是要讓居民主動參與，促進社區發展。這最符合下列哪項原則？', options: ['A. 資訊壟斷。', 'B. 透過公平參與，實現地方治理。', 'C. 經濟至上。', 'D. 僅由少數菁英領導。'], answer: 'B', abilityQ: false },
+                        { q: '3-3. 石碇除了煤礦以外，歷史上也曾是哪一種知名產業的產地？', options: ['A. 稻米或甘蔗種植。', 'B. 大菁染料或茶葉。', 'C. 漁業或水產養殖。', 'D. 高山水果種植。'], answer: 'B', abilityQ: false },
+                        { q: '3-4. 為了吸引青年返鄉或「關係人口」參與，遺址活化設計應考慮納入下列哪種元素？', options: ['A. 僅展示老舊文物。', 'B. 融入互動式、創意設計的展覽或活動空間。', 'C. 完全禁止外人進入參觀。', 'D. 將所有老舊建築拆除。'], answer: 'B', abilityQ: false },
+                        { q: '3-5. 「不見天街」這種聚落景觀的形成，主要與哪一項地域限制或需求有關？', options: ['A. 戰爭時期為了躲避空襲。', 'B. 山區地形、氣候或為了商業避雨。', 'C. 現代建築美學的追求。', 'D. 為了防止動物入侵。'], answer: 'B', abilityQ: false }
+                    ]
+                }
+            ]
+        };
+
+        let gameState = {
+            currentStage: 0,
+            currentQuestion: 0,
+            fragmentsCollected: 0,
+            score: 0,
+            abilitiesUsed: { 0: false, 1: false, 2: false },
+            isQuestionLocked: false,
+            selectedRole: null // 追蹤玩家選擇的角色
+        };
+
+        const elements = {
+            startScreen: document.getElementById('start-screen'),
+            gameScreen: document.getElementById('game-screen'),
+            finalScreen: document.getElementById('final-screen'),
+            selectRoleScreen: document.getElementById('select-role-screen'),
+            stageTitle: document.getElementById('stage-title'),
+            progressText: document.getElementById('progress-text'),
+            questionText: document.getElementById('question-text'),
+            currentQIndex: document.getElementById('current-q-index'),
+            optionsList: document.getElementById('options-list'),
+            abilityUI: document.getElementById('ability-ui'),
+            currentAbility: document.getElementById('current-ability'),
+            message: document.getElementById('message'),
+            nextQBtn: document.getElementById('next-q-btn'),
+            playerRoleDisplay: document.getElementById('player-role-display'),
+            roleSelectionGrid: document.getElementById('role-selection-grid'),
+            confirmRoleBtn: document.getElementById('confirm-role-btn')
+        };
+
+        // 顯示指定畫面
+        function showScreen(screenId) {
+            elements.startScreen.style.display = 'none';
+            elements.gameScreen.style.display = 'none';
+            elements.finalScreen.style.display = 'none';
+            elements.selectRoleScreen.style.display = 'none';
+            document.getElementById(screenId).style.display = 'block';
+        }
+
+        // 顯示角色選擇畫面
+        function showRoleSelection() {
+            showScreen('select-role-screen');
+            renderRoleSelection();
+        }
+
+        // 渲染角色選擇卡片
+        function renderRoleSelection() {
+            elements.roleSelectionGrid.innerHTML = '';
+            let selectedRoleKey = null;
+
+            Object.values(gameData.roles).forEach(role => {
+                const card = document.createElement('div');
+                card.className = 'role-card';
+                card.innerHTML = `
+                    <h3>${role.name}</h3>
+                    <p><strong>專長領域：</strong>${role.field}</p>
+                    <p><strong>專長能力：</strong>${role.ability}</p>
+                `;
+                card.onclick = () => {
+                    // 取消所有選中的狀態
+                    document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+                    
+                    // 設定選中狀態
+                    card.classList.add('selected');
+                    selectedRoleKey = role.key;
+                    elements.confirmRoleBtn.classList.remove('disabled');
+                };
+                elements.roleSelectionGrid.appendChild(card);
+            });
+
+            // 調整確認按鈕的點擊事件，確保它在點擊時使用正確的 selectedRoleKey
+            elements.confirmRoleBtn.onclick = () => {
+                if (document.querySelector('.role-card.selected')) {
+                    gameState.selectedRole = document.querySelector('.role-card.selected h3').textContent.split('-')[1].trim();
+                    startGame();
+                }
+            };
+        }
+
+        // 開始遊戲
+        function startGame() {
+            // 由於角色資訊已經確定，從這裡開始關卡流程
+            gameState.currentStage = 0;
+            gameState.currentQuestion = 0;
+            gameState.fragmentsCollected = 0;
+            gameState.score = 0;
+            gameState.abilitiesUsed = { 0: false, 1: false, 2: false };
+            showScreen('game-screen');
+            renderGame();
+        }
+
+        // 渲染遊戲畫面
+        function renderGame() {
+            if (gameState.currentStage >= gameData.stages.length) {
+                return showScreen('final-screen');
+            }
+
+            const stage = gameData.stages[gameState.currentStage];
+            const currentQ = stage.questions[gameState.currentQuestion];
+
+            elements.stageTitle.textContent = `${stage.title} (收集 ${stage.fragment})`;
+            elements.progressText.innerHTML = `已收集 <span class="fragment">${gameState.fragmentsCollected}</span> / 3 張碎片 | 正在回答 ${gameState.currentQuestion + 1} / ${stage.questions.length} 題`;
+            elements.currentQIndex.textContent = `第 ${currentQ.q.split('.')[0]} 題：`; // 顯示如 1-1, 2-3
+            elements.questionText.textContent = currentQ.q.substring(currentQ.q.indexOf('.') + 1).trim(); // 顯示問句
+            elements.message.textContent = '';
+            elements.message.style.backgroundColor = 'transparent';
+            elements.nextQBtn.classList.add('disabled');
+            gameState.isQuestionLocked = false;
+
+            renderPlayerRoleDisplay();
+            renderOptions(currentQ);
+            renderAbilityUI(stage, currentQ);
+        }
+
+        // 渲染玩家角色顯示
+        function renderPlayerRoleDisplay() {
+            const roleKey = gameState.selectedRole;
+            const role = Object.values(gameData.roles).find(r => r.name.includes(roleKey));
+
+            elements.playerRoleDisplay.innerHTML = `
+                <p><strong>你的身份：</strong> ${role.name}</p>
+                <p><strong>你的專長：</strong> ${role.ability}</p>
+            `;
+        }
+
+        // 渲染選項
+        function renderOptions(question, optionsOverride = null) {
+            const options = optionsOverride || question.options;
+            elements.optionsList.innerHTML = '';
+
+            options.forEach((option, index) => {
+                const li = document.createElement('li');
+                li.textContent = option;
+                li.dataset.index = index;
+                li.onclick = () => checkAnswer(option.charAt(0), li);
+                if (gameState.isQuestionLocked) {
+                    li.classList.add('disabled');
+                }
+                elements.optionsList.appendChild(li);
+            });
+        }
+
+        // 檢查答案
+        function checkAnswer(selectedOption, liElement) {
+            if (gameState.isQuestionLocked) return;
+
+            const stage = gameData.stages[gameState.currentStage];
+            const currentQ = stage.questions[gameState.currentQuestion];
+            const isCorrect = (selectedOption === currentQ.answer);
+
+            gameState.isQuestionLocked = true;
+            elements.nextQBtn.classList.remove('disabled');
+
+            // 標記所有選項的樣式
+            Array.from(elements.optionsList.children).forEach(item => {
+                item.classList.add('disabled');
+                if (item.textContent.charAt(0) === currentQ.answer) {
+                    item.classList.add('correct-answer');
+                }
+            });
+
+            if (isCorrect) {
+                gameState.score++;
+                elements.message.textContent = '✅ 正確！偵查順利，獲得關鍵線索。';
+                elements.message.style.backgroundColor = '#d4edda';
+            } else {
+                liElement.classList.add('wrong-answer');
+                elements.message.textContent = `❌ 錯誤！你選了 ${selectedOption}，正確答案是 ${currentQ.answer}。請繼續努力。`;
+                elements.message.style.backgroundColor = '#f8d7da';
+            }
+        }
+
+        // 渲染能力 UI
+        function renderAbilityUI(stage, currentQ) {
+            const abilityBtn = elements.abilityUI.querySelector('.ability-btn');
+            const roleKey = gameState.selectedRole;
+            const role = Object.values(gameData.roles).find(r => r.name.includes(roleKey));
+            
+            // 檢查當前題目是否為玩家角色的專業題 (簡易判斷邏輯)
+            const questionNumber = currentQ.q.split('.')[0];
+            const isSpecialtyQ = role.specialtyQ.includes(questionNumber);
+
+            elements.currentAbility.textContent = role.ability;
+
+            if (gameState.abilitiesUsed[stage.id]) {
+                abilityBtn.textContent = '本關能力已使用';
+                abilityBtn.classList.add('disabled');
+            } else if (isSpecialtyQ) {
+                abilityBtn.textContent = `使用【${role.name.split('-')[0].trim()}】專長 (本關限用一次)`;
+                abilityBtn.classList.remove('disabled');
+            } else {
+                abilityBtn.textContent = '非專長題，暫無法使用';
+                abilityBtn.classList.add('disabled');
+            }
+        }
+
+        // 使用角色能力
+        function useAbility() {
+            const stage = gameData.stages[gameState.currentStage];
+            if (gameState.abilitiesUsed[stage.id] || gameState.isQuestionLocked) return;
+
+            const currentQ = stage.questions[gameState.currentQuestion];
+            const roleKey = gameState.selectedRole;
+            const role = Object.values(gameData.roles).find(r => r.name.includes(roleKey));
+            
+            const questionNumber = currentQ.q.split('.')[0];
+            if (!role.specialtyQ.includes(questionNumber)) {
+                alert(`這不是【${role.name}】的專業題目，無法提供協助！`);
+                return;
+            }
+
+            // ----------------------------------------------------
+            // 執行能力效果：排除兩個錯誤選項 (目前所有角色的能力邏輯統一處理)
+            // ----------------------------------------------------
+            
+            const correct = currentQ.answer;
+            const originalOptions = currentQ.options;
+            let incorrectOptions = originalOptions.filter(opt => opt.charAt(0) !== correct);
+            
+            // 隨機移除兩個錯誤選項
+            let removedCount = 0;
+            const newOptions = [...originalOptions];
+
+            while (removedCount < 2 && incorrectOptions.length > 0) {
+                const randomIndex = Math.floor(Math.random() * incorrectOptions.length);
+                const optionToRemove = incorrectOptions[randomIndex];
+                
+                const optionIndexInNewOptions = newOptions.indexOf(optionToRemove);
+                if (optionIndexInNewOptions > -1) {
+                    newOptions.splice(optionIndexInNewOptions, 1);
+                    removedCount++;
+                }
+                
+                incorrectOptions.splice(randomIndex, 1);
+            }
+
+            gameState.abilitiesUsed[stage.id] = true;
+            renderOptions(currentQ, newOptions);
+            renderAbilityUI(stage, currentQ);
+            
+            elements.message.textContent = `💡 角色能力【${role.ability}】已使用，已排除兩個錯誤選項！請在剩下的選項中作答。`;
+            elements.message.style.backgroundColor = '#ffffcc';
+        }
+
+        // 下一題或下一關
+        function nextQuestion() {
+            if (!gameState.isQuestionLocked) return; // 必須先作答
+
+            gameState.currentQuestion++;
+
+            const stage = gameData.stages[gameState.currentStage];
+
+            if (gameState.currentQuestion >= stage.questions.length) {
+                // 關卡完成，發放碎片
+                gameState.fragmentsCollected++;
+                alert(`恭喜完成【${stage.title}】！\n你獲得了 ${stage.fragment}！\n即將進入下一關。`);
+
+                gameState.currentStage++;
+                gameState.currentQuestion = 0;
+            }
+            
+            renderGame();
+        }
+
+        // 初始化遊戲
+        showScreen('start-screen');
+    </script>
+
+</body>
+</html>
