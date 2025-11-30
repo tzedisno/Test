@@ -274,6 +274,7 @@
         #next-q-container {
             display: flex;
             justify-content: center;
+            gap: 15px;
             margin-top: 25px;
             padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.1);
@@ -311,8 +312,8 @@
                 <p>為了聽懂山城的聲音，你必須選擇一位最投緣的<strong>「在地喵夥伴」</strong>，在牠的帶領下，展開一場穿梭黑金歲月與清澈溪流的冒險。</p>
             </div>
             <div style="text-align: center;">
-                <p><strong>行動目標：</strong> 尋找你的貓咪夥伴，通過三道關卡，收集【記憶碎片】。</p>
-                <button class="btn" onclick="showRoleSelection()">出發尋找喵夥伴</button>
+                <p><strong>行動目標：</strong> 選擇一個在地貓夥伴幫助你通過三道關卡 收集記憶的碎片!</p>
+                <button class="btn" onclick="goToRoleSelection()">出發尋找喵夥伴</button>
             </div>
         </div>
 
@@ -324,7 +325,7 @@
                 </div>
             
             <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                <button class="btn btn-secondary" onclick="showScreen('start-screen')">&laquo; 返回標題</button>
+                <button class="btn btn-secondary" onclick="history.back()">&laquo; 返回標題</button>
                 <button class="btn disabled" id="confirm-role-btn" onclick="confirmRoleSelection()">與牠同行，開始旅程 &raquo;</button>
             </div>
         </div>
@@ -338,7 +339,8 @@
             <h2 id="stage-title">關卡標題</h2>
             
             <div id="question-area" class="question-box">
-                <p id="question-text"></p> <ul id="options-list" class="options-list">
+                <p id="question-text"></p>
+                <ul id="options-list" class="options-list">
                     </ul>
                 
                 <div id="ability-ui" class="ability-box">
@@ -353,6 +355,7 @@
             <div id="message"></div>
             
             <div id="next-q-container">
+                <button class="btn btn-secondary" id="prev-q-btn" onclick="history.back()">&laquo; 上一題</button>
                 <button class="btn disabled" id="next-q-btn" onclick="nextQuestion()">繼續前進 &raquo;</button>
             </div>
         </div>
@@ -370,56 +373,39 @@
             </div>
         </div>
 
-    </div> </div> <div id="game-character-display" style="display: none;">
-        </div>
+    </div>
+    </div>
+
+    <div id="game-character-display" style="display: none;"></div>
 
     <script>
-        // --- 遊戲資料設定 ---
+        // --- 遊戲資料 ---
         const gameData = {
-            // 夥伴資料更新：結合石碇特色與可愛名稱
             partners: {
-                // 對應 1.png (牛仔帽貓) -> 代表「茶」與自然
                 '茶米': { 
-                    key: '茶米', 
-                    name: '茶米 (生態觀察家)', 
-                    desc: '名字取自石碇著名的「包種茶」(台語諧音)。熱愛大自然，對溪流生態瞭若指掌。',
-                    ability: '【自然感應】刪去兩個錯誤選項', 
-                    field: '溪流生態與環境指標', 
-                    specialtyQ: ['2-1', '2-3', '2-5'] 
+                    key: '茶米', name: '茶米 (生態觀察家)', 
+                    desc: '名字取自石碇著名的「包種茶」。熱愛大自然，對溪流生態瞭若指掌。',
+                    ability: '【自然感應】刪去兩個錯誤選項', field: '溪流生態與環境指標', specialtyQ: ['2-1', '2-3', '2-5'] 
                 },
-                // 對應 2.png (黑色紳士貓) -> 代表「煤」與歷史
                 '煤球': { 
-                    key: '煤球', 
-                    name: '煤球 (文史挖掘者)', 
+                    key: '煤球', name: '煤球 (文史挖掘者)', 
                     desc: '全身黑得發亮，象徵石碇的「黑金」歲月。熟知所有關於礦坑的老故事。',
-                    ability: '【歷史回溯】刪去兩個錯誤選項', 
-                    field: '礦業歷史與聚落文化', 
-                    specialtyQ: ['1-1', '1-3', '3-2'] 
+                    ability: '【歷史回溯】刪去兩個錯誤選項', field: '礦業歷史與聚落文化', specialtyQ: ['1-1', '1-3', '3-2'] 
                 },
-                // 對應 3.png (拉麵/豆腐貓) -> 代表「豆腐/美食」與老街生活
                 '豆豆': { 
-                    key: '豆豆', 
-                    name: '豆豆 (老街嚮導)', 
+                    key: '豆豆', name: '豆豆 (老街嚮導)', 
                     desc: '名字來自石碇知名的「百年豆腐」。是個吃貨，最懂老街的建築與空間秘密。',
-                    ability: '【地景嗅覺】刪去兩個錯誤選項', 
-                    field: '特殊建築與地理空間', 
-                    specialtyQ: ['1-2', '3-1', '3-4'] 
+                    ability: '【地景嗅覺】刪去兩個錯誤選項', field: '特殊建築與地理空間', specialtyQ: ['1-2', '3-1', '3-4'] 
                 },
-                // 對應 4.png (現代貓/和服貓) -> 代表「石碇」地名與創生
                 '小石': { 
-                    key: '小石', 
-                    name: '小石 (創生設計師)', 
+                    key: '小石', name: '小石 (創生設計師)', 
                     desc: '取自「石」碇之名。喜歡新舊融合的事物，對社區未來的發展特別有想法。',
-                    ability: '【創意腦力】刪去兩個錯誤選項', 
-                    field: '社區創生與未來發展', 
-                    specialtyQ: ['2-2', '2-4', '3-3'] 
+                    ability: '【創意腦力】刪去兩個錯誤選項', field: '社區創生與未來發展', specialtyQ: ['2-2', '2-4', '3-3'] 
                 }
             },
             stages: [
                 {
-                    id: 0,
-                    title: '第一關：黑金歲月的餘暉 (礦業記憶)',
-                    fragment: '【黑金記憶碎片】',
+                    id: 0, title: '第一關：黑金歲月的餘暉 (礦業記憶)', fragment: '【黑金記憶碎片】',
                     questions: [
                         { q: '1-1. 石碇曾是北台灣重要的煤礦產區。在礦業鼎盛時期，為了將山裡的煤礦運送出去，最主要的交通工具是什麼？', options: ['A. 載重卡車。', 'B. 輕便鐵道(台車)與人力。', 'C. 空中纜車。', 'D. 透過文山溪水運。'], answer: 'B' },
                         { q: '1-2. 礦工的工作環境極度艱險。當時在礦坑口常會祭拜哪位神祇，祈求進入地底後能平安歸來？', options: ['A. 媽祖。', 'B. 關聖帝君。', 'C. 土地公。', 'D. 清水祖師。'], answer: 'C' },
@@ -428,9 +414,7 @@
                     ]
                 },
                 {
-                    id: 1,
-                    title: '第二關：溪流的無聲告白 (生態環境)',
-                    fragment: '【清溪生態碎片】',
+                    id: 1, title: '第二關：溪流的無聲告白 (生態環境)', fragment: '【清溪生態碎片】',
                     questions: [
                         { q: '2-1. 流經石碇老街的核心溪流是哪一條？它是當地居民生活的重要命脈。', options: ['A. 淡水河。', 'B. 基隆河。', 'C. 文山溪 (景美溪上游)。', 'D. 北勢溪。'], answer: 'C' },
                         { q: '2-2. 過去的礦業活動可能對溪流留下長期的影響。下列何者「不是」礦區常見的環境後遺症？', options: ['A. 廢礦堆在雨後沖刷出酸性廢水。', 'B. 溪流中重金屬含量潛在偏高。', 'C. 溪水溫度異常升高變成溫泉。', 'D. 泥沙淤積影響底棲生物。'], answer: 'C' },
@@ -439,9 +423,7 @@
                     ]
                 },
                 {
-                    id: 2,
-                    title: '第三關：山城的空間智慧 (聚落與創生)',
-                    fragment: '【山城建築碎片】',
+                    id: 2, title: '第三關：山城的空間智慧 (聚落與創生)', fragment: '【山城建築碎片】',
                     questions: [
                         { q: '3-1. 石碇東街著名的「吊腳樓」建築景觀，其形成的根本地理原因是什麼？', options: ['A. 為了美觀與藝術感。', 'B. 腹地狹小，為了爭取空間而將房屋懸空蓋在溪床上。', 'C. 為了防禦敵人的進攻。', 'D. 模仿國外的水上屋設計。'], answer: 'B' },
                         { q: '3-2. 石碇特殊的「不見天街」，是指房屋二樓空間向外延伸覆蓋了一樓的街道，形成了有遮蔽的通道。這種設計在多雨的山城有什麼實際功能？', options: ['A. 讓行人與商家可以遮風避雨進行商業活動。', 'B. 完全為了阻擋陽光照射。', 'C. 增加建築結構的重量。', 'D. 為了在二樓種植植物。'], answer: 'A' },
@@ -452,6 +434,7 @@
             ]
         };
 
+        // --- 狀態變數 ---
         let gameState = {
             currentStage: 0,
             currentQuestion: 0,
@@ -459,10 +442,10 @@
             score: 0,
             abilitiesUsed: { 0: false, 1: false, 2: false },
             isQuestionLocked: false,
-            selectedPartnerKey: null 
+            selectedPartnerKey: null,
+            answers: {} 
         };
 
-        // --- DOM 元素參照 ---
         const elements = {
             screens: document.querySelectorAll('.screen'),
             stageTitle: document.getElementById('stage-title'),
@@ -473,6 +456,7 @@
             currentAbility: document.getElementById('current-ability'),
             message: document.getElementById('message'),
             nextQBtn: document.getElementById('next-q-btn'),
+            prevQBtn: document.getElementById('prev-q-btn'),
             partnerInfoText: document.getElementById('partner-info-text'),
             roleSelectionGrid: document.getElementById('role-selection-grid'),
             confirmRoleBtn: document.getElementById('confirm-role-btn'),
@@ -480,36 +464,60 @@
             finalPartnerName: document.getElementById('final-partner-name')
         };
 
-        // --- 核心功能函式 ---
+        // --- History API 核心邏輯 ---
+        
+        // 初始化：取代當前狀態為 start
+        window.history.replaceState({ page: 'start-screen' }, '', '');
 
-        // 顯示指定畫面
+        // 監聽瀏覽器的上一頁/下一頁事件 (popstate)
+        window.addEventListener('popstate', (event) => {
+            if (event.state) {
+                handleStateChange(event.state);
+            } else {
+                // 如果沒有狀態 (極少見)，預設回首頁
+                showScreen('start-screen');
+            }
+        });
+
+        // 根據歷史狀態來渲染畫面
+        function handleStateChange(state) {
+            if (state.page === 'game-screen') {
+                gameState.currentStage = state.stage;
+                gameState.currentQuestion = state.question;
+                // 這裡不呼叫 history.pushState，因為我們是按上一頁回來的
+                showScreen('game-screen');
+                displayCharacterImage();
+                renderGame(false); // false 表示不要再 push 歷史紀錄
+            } else {
+                showScreen(state.page);
+                if(state.page === 'select-role-screen') {
+                    renderRoleSelection();
+                }
+            }
+        }
+
         function showScreen(screenId) {
             elements.screens.forEach(s => s.style.display = 'none');
             document.getElementById(screenId).style.display = 'block';
-            
-            // 控制角色立繪顯示
             elements.gameCharacterDisplay.style.display = (screenId === 'game-screen') ? 'block' : 'none';
-            
-            window.scrollTo(0, 0); // 切換畫面時捲動到頂部
+            window.scrollTo(0, 0); 
         }
 
-        // 顯示夥伴選擇畫面
-        function showRoleSelection() {
+        // 按下「出發尋找」時呼叫
+        function goToRoleSelection() {
+            history.pushState({ page: 'select-role-screen' }, '', '');
             showScreen('select-role-screen');
             renderRoleSelection();
         }
 
-        // 渲染夥伴選擇卡片
         function renderRoleSelection() {
             elements.roleSelectionGrid.innerHTML = '';
-            // 確保圖片檔名與您的 assets 資料夾一致
             const roleImages = { '茶米': '1.png', '煤球': '2.png', '豆豆': '3.png', '小石': '4.png' };
 
             Object.values(gameData.partners).forEach(partner => {
                 const card = document.createElement('div');
                 card.className = 'role-card';
                 card.dataset.key = partner.key; 
-                // 使用 onerror 事件處理圖片讀取失敗的情況
                 card.innerHTML = `
                     <div class="role-card-image">
                         <img src="assets/${roleImages[partner.key]}" alt="${partner.name}" onerror="this.style.display='none';this.parentNode.style.backgroundColor='#555';">
@@ -529,7 +537,6 @@
             });
         }
 
-        // 確認選擇並開始遊戲
         function confirmRoleSelection() {
             const selectedCard = document.querySelector('.role-card.selected');
             if (selectedCard) {
@@ -538,130 +545,169 @@
             }
         }
 
-        // 開始遊戲初始化
         function startGame() {
-            // 重置遊戲狀態
             gameState.currentStage = 0;
             gameState.currentQuestion = 0;
             gameState.fragmentsCollected = 0;
             gameState.score = 0;
             gameState.abilitiesUsed = { 0: false, 1: false, 2: false };
+            gameState.answers = {}; 
+            
+            // Push 初始遊戲狀態
+            history.pushState({ page: 'game-screen', stage: 0, question: 0 }, '', '');
             
             showScreen('game-screen');
-            displayCharacterImage(); // 顯示夥伴立繪
-            renderGame();
+            displayCharacterImage(); 
+            renderGame(false); // 狀態已手動 push，render 內不需再 push
         }
 
-        // 顯示夥伴立繪
         function displayCharacterImage() {
             const roleImages = { '茶米': '1.png', '煤球': '2.png', '豆豆': '3.png', '小石': '4.png' };
             const imageName = roleImages[gameState.selectedPartnerKey];
-            // 同樣加入 onerror 處理
             elements.gameCharacterDisplay.innerHTML = `<img src="assets/${imageName}" alt="夥伴立繪" onerror="this.style.display='none'">`;
         }
 
-        // 渲染遊戲主畫面 (題目、選項、UI)
-        function renderGame() {
+        // renderGame 增加 pushHistory 參數控制是否要新增歷史紀錄
+        function renderGame(pushHistory = true) {
             if (gameState.currentStage >= gameData.stages.length) {
                 return showFinalScreen();
+            }
+
+            // 如果需要記錄歷史 (例如按下一題時)，執行 pushState
+            if (pushHistory) {
+                history.pushState({ 
+                    page: 'game-screen', 
+                    stage: gameState.currentStage, 
+                    question: gameState.currentQuestion 
+                }, '', '');
             }
 
             const stage = gameData.stages[gameState.currentStage];
             const currentQ = stage.questions[gameState.currentQuestion];
             const partner = gameData.partners[gameState.selectedPartnerKey];
+            const answerKey = `${gameState.currentStage}-${gameState.currentQuestion}`;
+            const recordedAnswer = gameState.answers[answerKey];
 
-            // 更新 UI 文字
             elements.stageTitle.innerText = `${stage.title}`;
             elements.partnerInfoText.innerHTML = `你的喵夥伴：<strong>${partner.name.split(' ')[0]}</strong>`;
             elements.progressText.innerText = `進度：第 ${gameState.currentStage + 1} 關 - 第 ${gameState.currentQuestion + 1}/${stage.questions.length} 題`;
-            
-            // 更新題目與狀態
             elements.questionText.innerText = currentQ.q; 
+            
             elements.message.innerText = '';
             elements.message.style.backgroundColor = 'transparent';
             elements.nextQBtn.classList.add('disabled');
             elements.nextQBtn.innerText = "繼續前進 »";
-            gameState.isQuestionLocked = false;
+            
+            // 控制上一題按鈕：如果是第一題，禁用；否則啟用
+            if (gameState.currentQuestion === 0 && gameState.currentStage === 0) {
+                // 第一關第一題，上一頁會回到角色選擇 (由瀏覽器控制)
+                 elements.prevQBtn.classList.remove('disabled'); // 讓它能觸發 history.back()
+                 elements.prevQBtn.innerHTML = "&laquo; 回選角";
+            } else {
+                 elements.prevQBtn.classList.remove('disabled');
+                 elements.prevQBtn.innerHTML = "&laquo; 上一題";
+            }
 
-            renderOptions(currentQ);
+            if (recordedAnswer) {
+                gameState.isQuestionLocked = true;
+                elements.nextQBtn.classList.remove('disabled'); 
+                const isCorrect = (recordedAnswer === currentQ.answer);
+                if (isCorrect) {
+                    elements.message.innerText = '✅ (已作答) 回答正確！喵！';
+                    elements.message.style.backgroundColor = 'rgba(212, 237, 218, 0.9)';
+                    elements.message.style.color = '#155724';
+                } else {
+                    elements.message.innerText = `❌ (已作答) 正確答案是 ${currentQ.answer}。`;
+                    elements.message.style.backgroundColor = 'rgba(248, 215, 218, 0.9)';
+                    elements.message.style.color = '#721c24';
+                }
+            } else {
+                gameState.isQuestionLocked = false;
+            }
+
+            renderOptions(currentQ, recordedAnswer);
             renderAbilityUI(stage, currentQ, partner);
         }
 
-        // 渲染選項列表
-        function renderOptions(question) {
+        function renderOptions(question, recordedAnswer) {
             elements.optionsList.innerHTML = '';
             question.options.forEach(option => {
                 const li = document.createElement('li');
                 li.innerText = option;
-                // 點擊事件：傳入選項的第一個字母 (A, B, C, D) 與被點擊的元素
                 li.onclick = () => checkAnswer(option.charAt(0), li);
+                
+                if (recordedAnswer) {
+                    li.classList.add('disabled');
+                    if (option.charAt(0) === question.answer) {
+                        li.classList.add('correct-answer');
+                    } else if (option.charAt(0) === recordedAnswer && recordedAnswer !== question.answer) {
+                        li.classList.add('wrong-answer');
+                    }
+                }
                 elements.optionsList.appendChild(li);
             });
         }
 
-        // 渲染能力 UI 按鈕狀態
         function renderAbilityUI(stage, currentQ, partner) {
             const abilityBtn = elements.abilityUI.querySelector('.ability-btn');
-            const questionId = currentQ.q.split('.')[0]; // 取得題號例如 "1-1"
+            const questionId = currentQ.q.split('.')[0]; 
             const isSpecialtyQ = partner.specialtyQ.includes(questionId);
-
             elements.currentAbility.innerText = partner.ability;
 
             if (gameState.abilitiesUsed[stage.id]) {
                 abilityBtn.innerText = '本關喵喵支援已用過';
                 abilityBtn.classList.add('disabled');
             } else if (isSpecialtyQ) {
-                // 這裡只取名字的前幾個字
                 abilityBtn.innerText = `請求 ${partner.name.split(' ')[0]} 協助`;
-                abilityBtn.classList.remove('disabled');
+                if (!gameState.isQuestionLocked) {
+                    abilityBtn.classList.remove('disabled');
+                } else {
+                    abilityBtn.classList.add('disabled');
+                }
             } else {
                 abilityBtn.innerText = '此題非喵夥伴熟悉領域';
                 abilityBtn.classList.add('disabled');
             }
         }
 
-        // 執行夥伴能力
         function useAbility() {
             const stage = gameData.stages[gameState.currentStage];
             const partner = gameData.partners[gameState.selectedPartnerKey];
             const currentQ = stage.questions[gameState.currentQuestion];
             const questionId = currentQ.q.split('.')[0];
 
-            // 雙重檢查
             if (gameState.abilitiesUsed[stage.id] || gameState.isQuestionLocked || !partner.specialtyQ.includes(questionId)) return;
 
-            // 找出錯誤選項
             const correctOptChar = currentQ.answer;
             const optionElements = Array.from(elements.optionsList.children);
             let wrongOptions = optionElements.filter(el => el.innerText.charAt(0) !== correctOptChar);
             
-            // 隨機隱藏兩個錯誤選項
             for (let i = 0; i < 2 && wrongOptions.length > 0; i++) {
                 const randomIndex = Math.floor(Math.random() * wrongOptions.length);
-                wrongOptions[randomIndex].style.visibility = 'hidden'; // 使用 visibility hidden 保持版面
-                wrongOptions[randomIndex].classList.add('disabled'); // 確保不能點擊
+                wrongOptions[randomIndex].style.visibility = 'hidden'; 
+                wrongOptions[randomIndex].classList.add('disabled'); 
                 wrongOptions.splice(randomIndex, 1);
             }
 
             gameState.abilitiesUsed[stage.id] = true;
             renderAbilityUI(stage, currentQ, partner);
-            
             elements.message.innerText = `💡 ${partner.name.split(' ')[0]} 伸出了貓掌，幫你撥開了干擾選項！`;
             elements.message.style.backgroundColor = 'rgba(255, 255, 204, 0.9)';
             elements.message.style.color = '#333';
         }
 
-        // 檢查答案
         function checkAnswer(selectedOptionChar, liElement) {
             if (gameState.isQuestionLocked || liElement.classList.contains('disabled')) return;
 
             const currentQ = gameData.stages[gameState.currentStage].questions[gameState.currentQuestion];
             const isCorrect = (selectedOptionChar === currentQ.answer);
 
+            const answerKey = `${gameState.currentStage}-${gameState.currentQuestion}`;
+            gameState.answers[answerKey] = selectedOptionChar;
+
             gameState.isQuestionLocked = true;
             elements.nextQBtn.classList.remove('disabled');
 
-            // 標示所有選項狀態
             Array.from(elements.optionsList.children).forEach(item => {
                 item.classList.add('disabled');
                 if (item.innerText.charAt(0) === currentQ.answer) {
@@ -671,7 +717,6 @@
                 }
             });
 
-            // 顯示結果訊息
             if (isCorrect) {
                 gameState.score++;
                 elements.message.innerText = '✅ 答對了！喵！';
@@ -684,38 +729,35 @@
             }
         }
 
-        // 前往下一題或下一關
         function nextQuestion() {
             if (!gameState.isQuestionLocked) return;
 
             gameState.currentQuestion++;
             const stage = gameData.stages[gameState.currentStage];
 
-            // 檢查本關是否結束
             if (gameState.currentQuestion >= stage.questions.length) {
                 gameState.fragmentsCollected++;
                 elements.message.innerText = `🎉 關卡完成！獲得${stage.fragment}。準備前往下一站...`;
                 elements.message.style.backgroundColor = 'rgba(255, 183, 77, 0.9)';
                 elements.nextQBtn.innerText = "前往下一關 »";
                 
-                // 稍微延遲後進入下一關
                 setTimeout(() => {
                     gameState.currentStage++;
                     gameState.currentQuestion = 0;
-                    renderGame();
+                    renderGame(); // 這裡會自動 push 歷史紀錄
                 }, 1500);
             } else {
-                renderGame();
+                renderGame(); // 這裡會自動 push 歷史紀錄
             }
         }
         
-        // 顯示最終畫面
         function showFinalScreen() {
             elements.finalPartnerName.innerText = gameData.partners[gameState.selectedPartnerKey].name.split(' ')[0];
+            history.pushState({ page: 'final-screen' }, '', '');
             showScreen('final-screen');
         }
 
-        // --- 程式入口 ---
+        // 初始載入
         showScreen('start-screen');
 
     </script>
