@@ -8,25 +8,46 @@
         /* CSS 樣式 */
         body {
             font-family: "Microsoft JhengHei", Arial, sans-serif;
-            background-color: #1a1a1a; /* 深色背景 */
+            /* 使用背景圖（請放置圖片於 assets/bg.jpg）並加上半透明深色遮罩以維持文字與卡片可讀性 */
+            background: linear-gradient(rgba(10,10,10,0.6), rgba(25    ,200,200,0.5)), url('assets/bg.jpg') center/cover fixed no-repeat;
             color: #e0e0e0; /* 淺灰文字 */
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
         }
         #game-container {
             width: 100%;
-            max-width: 850px;
-            background-color: #2d2d2d; /* 深灰容器 */
+                max-width: 100%; /* 讓內層配合外層寬度 */
+            background-color: rgba(25,25,25,0.8); /* 半透明深灰容器 */
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             padding: 30px;
         }
+        /* 外層包層：半透明邊框與內距，讓整體更有層次 */
+        #outer-wrap {
+            width: 100%;
+                max-width: 1000px; /* 縮小寬度（可再調整） */
+            display: flex;
+            justify-content: center;
+            padding: 15px; /* 與 body 的間距 */
+            box-sizing: border-box;
+            background-color: rgba(0,0,0,0.3); /* 半透明外框遮罩 */
+            -webkit-backdrop-filter: blur(2px);
+            backdrop-filter: blur(2px);
+            border-radius: 5px;
+            margin: 0 10px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+ 
         h1 {
             color: #64b5f6; /* 淺藍色標題 */
             text-align: center;
-            border-bottom: 3px solid #64b5f6;
+            border-bottom: 3px solid #ffb74d;
             padding-bottom: 10px;
         }
         h2 {
@@ -45,7 +66,7 @@
             text-align: center;
         }
         .btn {
-            background-color: #1976d2; /* 深藍按鈕 */
+            background-color: #ffb74d; /* 深藍按鈕 */
             color: white;
             border: none;
             padding: 12px 25px;
@@ -73,7 +94,7 @@
             margin: 20px 0;
         }
         .role-card {
-            border: 2px solid #64b5f6;
+            border: 2px solid 	#FF8000;
             padding: 15px;
             border-radius: 8px;
             background-color: #3a3a3a; /* 深灰卡片 */
@@ -223,9 +244,46 @@
             justify-content: flex-end;
             margin-top: 15px;
         }
+        /* 通關淡入 overlay */
+        #victory-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.0); /* 透明，內容本身會呈現 */
+            z-index: 9999;
+            pointer-events: auto;
+        }
+        #victory-overlay .content {
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        @keyframes victoryFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes victoryFadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to   { opacity: 0; transform: scale(1.05); }
+        }
+        #victory-overlay.visible { display: flex; }
+        #victory-overlay.visible .content {
+            animation: victoryFadeIn 0.9s ease-out forwards;
+        }
+        #victory-overlay.hiding .content {
+            animation: victoryFadeOut 0.7s ease-in forwards;
+        }
     </style>
 </head>
 <body>
+    <div id="outer-wrap">
 
     <div id="game-container">
         <h1>
@@ -281,7 +339,7 @@
             <h2>🎉 關卡四：行動 - 不見天下的轉型藍圖</h2>
             <p><strong>恭喜！</strong>你已成功偵查並收集到完整的<span class="fragment">【轉型方案】</span>、<span class="fragment">【修復技術】</span>與<span class="fragment">【協力網絡】</span>三張碎片，拼湊出**「石碇復甦藍圖」**！</p>
 
-            <div style="background-color: #e9f7e9; padding: 20px; border: 2px solid #38761d; border-radius: 10px; margin-top: 20px;">
+            <div style="background-color: #e9f7e9; color: #000; padding: 20px; border: 2px solid #38761d; border-radius: 10px; margin-top: 20px;">
                 <h3>🔥 最終任務指令（實地應用）</h3>
                 <p>現在，你必須前往具歷史意義的<strong>石碇不見天街</strong>（或進行虛擬觀察），觀察該場域的空間設計智慧，並將你設計的「石碇復甦藍圖」具體化：</p>
                 <p><strong>設計一個結合遺址活化、生態復育、社區協力元素的遊戲化行動方案</strong>（例如：一個實地導覽路線圖、一個生態教育展板設計、或一份社區倡議報告）。</p>
@@ -292,7 +350,20 @@
 
     </div>
 
+    <!-- 通關淡入動畫 overlay -->
+    <div id="victory-overlay" aria-hidden="true">
+        <div class="content" role="dialog" aria-modal="true">
+            <h2 style="margin:0 0 10px; font-size:28px; color:#ffb74d;">通關！任務完成</h2>
+            <p style="margin:0 0 12px; color:#fff;">你已收集完整碎片，石碇山城迎向復甦。</p>
+            <!-- 可改為圖片或影片元素（若有 overlay.webm 可放入） -->
+            <div style="margin-top:8px; opacity:0.95;">
+                <img src="assets/winner.gif" alt="通關動畫" style="max-width:560px; width:100%; height:auto; display:block; margin:0 auto;" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </div>
+
     <!-- 遊戲中的角色立繪顯示 -->
+    </div>
     <div id="game-character-display" style="display: none;">
     </div>
 
@@ -389,6 +460,41 @@
             } else {
                 characterDisplay.style.display = 'none';
             }
+
+            // 在顯示最終畫面時觸發淡入通關動畫
+            if (screenId === 'final-screen') {
+                showVictoryOverlay();
+            }
+        }
+
+        // 顯示/隱藏通關 overlay
+        function showVictoryOverlay() {
+            const overlay = document.getElementById('victory-overlay');
+            if (!overlay) return;
+            overlay.classList.remove('hiding');
+            overlay.classList.add('visible');
+            overlay.setAttribute('aria-hidden', 'false');
+
+            // 點擊可立刻關閉
+            overlay.onclick = () => hideVictoryOverlay();
+
+            // 自動在 3.2 秒後淡出
+            setTimeout(() => {
+                hideVictoryOverlay();
+            }, 3200);
+        }
+
+        function hideVictoryOverlay() {
+            const overlay = document.getElementById('victory-overlay');
+            if (!overlay) return;
+            overlay.classList.add('hiding');
+            overlay.setAttribute('aria-hidden', 'true');
+            // 等待動畫結束再完全隱藏
+            setTimeout(() => {
+                overlay.classList.remove('visible');
+                overlay.classList.remove('hiding');
+                overlay.style.display = 'none';
+            }, 750);
         }
 
         // 顯示角色選擇畫面
