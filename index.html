@@ -746,10 +746,12 @@
                 gameState.score++;
                 elements.message.textContent = '✅ 正確！偵查順利，獲得關鍵線索。';
                 elements.message.style.backgroundColor = '#d4edda';
+                elements.message.style.color = '#000';
             } else {
                 liElement.classList.add('wrong-answer');
                 elements.message.textContent = `❌ 錯誤！你選了 ${selectedOption}，正確答案是 ${currentQ.answer}。請繼續努力。`;
                 elements.message.style.backgroundColor = '#f8d7da';
+                elements.message.style.color = '#000';
             }
         }
 
