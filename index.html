@@ -8,8 +8,8 @@
         /* CSS 樣式 */
         body {
             font-family: "Microsoft JhengHei", Arial, sans-serif;
-            background-color: #f0f8ff; /* 淺藍色背景 */
-            color: #333;
+            background-color: #1a1a1a; /* 深色背景 */
+            color: #e0e0e0; /* 淺灰文字 */
             margin: 0;
             padding: 20px;
             display: flex;
@@ -18,19 +18,19 @@
         #game-container {
             width: 100%;
             max-width: 850px;
-            background-color: #ffffff;
+            background-color: #2d2d2d; /* 深灰容器 */
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             padding: 30px;
         }
         h1 {
-            color: #004d99;
+            color: #64b5f6; /* 淺藍色標題 */
             text-align: center;
-            border-bottom: 3px solid #004d99;
+            border-bottom: 3px solid #64b5f6;
             padding-bottom: 10px;
         }
         h2 {
-            color: #cc5200;
+            color: #ffb74d; /* 橘黃色副標題 */
             margin-top: 25px;
         }
         .screen {
@@ -45,7 +45,7 @@
             text-align: center;
         }
         .btn {
-            background-color: #007bff;
+            background-color: #1976d2; /* 深藍按鈕 */
             color: white;
             border: none;
             padding: 12px 25px;
@@ -59,7 +59,7 @@
             transition: background-color 0.3s;
         }
         .btn:hover:not(.disabled) {
-            background-color: #0056b3;
+            background-color: #1565c0;
         }
         .disabled {
             opacity: 0.5;
@@ -73,65 +73,91 @@
             margin: 20px 0;
         }
         .role-card {
-            border: 2px solid #007bff;
+            border: 2px solid #64b5f6;
             padding: 15px;
             border-radius: 8px;
-            background-color: #e6f7ff;
+            background-color: #3a3a3a; /* 深灰卡片 */
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
             text-align: left;
+            color: #e0e0e0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        .role-card-image {
+            flex-shrink: 0;
+            width: 120px;
+            height: 140px;
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .role-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .role-card-content {
+            flex: 1;
         }
         .role-card:hover:not(.selected) {
-            background-color: #cce7ff;
+            background-color: #4a4a4a;
             transform: translateY(-3px);
         }
         .role-card.selected {
-            border-color: #cc5200;
-            background-color: #ffe6cc;
-            box-shadow: 0 0 10px rgba(204, 82, 0, 0.5);
+            border-color: #ffb74d;
+            background-color: #4a3a1a;
+            box-shadow: 0 0 10px rgba(255, 183, 77, 0.5);
         }
         .role-card h3 {
-            color: #004d99;
-            border-bottom: 1px dashed #004d99;
+            color: #64b5f6;
+            border-bottom: 1px dashed #64b5f6;
             margin-top: 0;
             padding-bottom: 5px;
         }
 
         /* 遊戲畫面樣式 */
         .question-box {
-            border: 1px solid #ddd;
+            border: 1px solid #444;
             padding: 20px;
             border-radius: 8px;
             margin-top: 15px;
-            background-color: #f7f7f7;
+            background-color: #3a3a3a; /* 深灰問題框 */
+            color: #e0e0e0;
         }
         .options-list {
             list-style: none;
             padding: 0;
         }
         .options-list li {
-            background-color: #e9ecef;
+            background-color: #454545;
             margin: 8px 0;
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.2s;
+            color: #e0e0e0;
         }
         .options-list li:hover:not(.disabled) {
-            background-color: #d1d9e0;
+            background-color: #555555;
         }
-        .options-list li.correct-answer { background-color: #d4edda; border: 1px solid #c3e6cb; }
-        .options-list li.wrong-answer { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .options-list li.correct-answer { background-color: #2e7d32; border: 1px solid #4caf50; color: #ffffff; }
+        .options-list li.wrong-answer { background-color: #c62828; border: 1px solid #f44336; color: #ffffff; }
         .ability-box {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
+            background-color: #3a3a2a;
+            border: 1px solid #666633;
             padding: 10px;
             margin-top: 15px;
             border-radius: 5px;
             text-align: center;
+            color: #e0e0e0;
         }
         .ability-btn {
-            background-color: #ffc107;
+            background-color: #ffb74d;
             color: #333;
             padding: 8px 15px;
             border: none;
@@ -144,41 +170,74 @@
             padding: 10px;
             border-radius: 5px;
             font-weight: bold;
+            color: #ffffff;
         }
         .fragment {
-            color: #cc5200;
+            color: #ffb74d;
             font-weight: bold;
             font-size: 1.1em;
         }
         #player-role-display {
-            background-color: #f0fff0;
-            border: 1px solid #d4edda;
+            background-color: #2a3a2a;
+            border: 1px solid #4caf50;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 15px;
             text-align: left; /* 確保內容靠左對齊 */
+            color: #e0e0e0;
         }
         .specialty-q-hint {
             font-size: 0.9em; 
-            color: #007700;
+            color: #81c784;
             margin-top: 5px;
         }
         .specialty-q-current {
-            color: #cc5200;
+            color: #ffb74d;
             font-weight: bold;
+        }
+        /* 遊戲中的角色立繪（左下角） */
+        #game-character-display {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 180px;
+            height: 240px;
+            background-color: rgba(45, 45, 45, 0.9);
+            border: 2px solid #64b5f6;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        #game-character-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 5px;
+        }
+        /* 下一題按鈕容器 */
+        #next-q-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
     <div id="game-container">
-        <h1>石碇迷蹤：山城復甦行動</h1>
+        <h1>
+            <!-- 將你的 logo 圖片放在 assets 資料夾，命名為 logo.png 或修改下方 src 路徑 -->
+            <img id="site-logo" src="assets/logo.png" alt="石碇迷蹤：山城復甦行動" style="max-width: 360px; width: 100%; height: auto; display: block; margin: 0 auto;">
+        </h1>
         <p><em>— 偵查山城的環境危機 —</em></p>
 
         <div id="start-screen" class="screen">
             <h2>📜 劇情啟動</h2>
             <p style="padding: 15px; border: 1px dashed #999;">
-                「石碇，不只是茶鄉，它曾是閃耀的煤礦之城。然而，淘金夢醒，環境留下了傷痕。你，是<strong>『山城復甦行動組』</strong>的成員，你的任務是響應文山溪發出的**『異常訊號』**。訊號中夾雜著舊時礦工的暗語：**『欲淨水脈，須解舊夢。』** 你必須追溯文山煤礦的興衰歷程，找出影響溪流生態的**『三大病灶』**，拼湊出完整的**生態修復行動方案**！」
+                <strong>「石碇，不只是茶鄉，它曾是閃耀的煤礦之城。然而，淘金夢醒，環境留下了傷痕。你，是『山城復甦行動組』的成員，你的任務是響應文山溪發出的『異常訊號』。訊號中夾雜著舊時礦工的暗語：『欲淨水脈，須解舊夢。』你必須追溯文山煤礦的興衰歷程，找出影響溪流生態的『三大病灶』，拼湊出完整的生態修復行動方案！」</strong>
             </p>
             <p><strong>任務目標：</strong> 通過三道關卡，收集【修復行動碎片】，解鎖最終的實地行動。</p>
             <button class="btn" onclick="showRoleSelection()">開始偵查行動</button>
@@ -213,7 +272,9 @@
             </div>
 
             <div id="message"></div>
-            <button class="btn disabled" id="next-q-btn" onclick="nextQuestion()">下一題 &raquo;</button>
+            <div id="next-q-container">
+                <button class="btn disabled" id="next-q-btn" onclick="nextQuestion()">下一題 &raquo;</button>
+            </div>
         </div>
 
         <div id="final-screen" class="screen">
@@ -229,6 +290,10 @@
             <p style="margin-top: 20px; font-style: italic;">感謝你為石碇山城與文山溪所做的努力！</p>
         </div>
 
+    </div>
+
+    <!-- 遊戲中的角色立繪顯示 -->
+    <div id="game-character-display" style="display: none;">
     </div>
 
     <script>
@@ -316,6 +381,14 @@
             elements.finalScreen.style.display = 'none';
             elements.selectRoleScreen.style.display = 'none';
             document.getElementById(screenId).style.display = 'block';
+            
+            // 只在遊戲畫面時顯示角色立繪
+            const characterDisplay = document.getElementById('game-character-display');
+            if (screenId === 'game-screen') {
+                characterDisplay.style.display = 'flex';
+            } else {
+                characterDisplay.style.display = 'none';
+            }
         }
 
         // 顯示角色選擇畫面
@@ -328,14 +401,26 @@
         function renderRoleSelection() {
             elements.roleSelectionGrid.innerHTML = '';
 
+            const roleImages = {
+                '溪哥': '1.png',
+                '阿文': '2.png',
+                '阿路': '3.png',
+                '小雅': '4.png'
+            };
+
             Object.values(gameData.roles).forEach(role => {
                 const card = document.createElement('div');
                 card.className = 'role-card';
                 card.dataset.key = role.key; 
                 card.innerHTML = `
-                    <h3>${role.name}</h3>
-                    <p><strong>專長領域：</strong>${role.field}</p>
-                    <p><strong>專長能力：</strong>${role.ability}</p>
+                    <div class="role-card-image">
+                        <img src="assets/${roleImages[role.key]}" alt="${role.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22140%22%3E%3Crect fill=%22%23555%22 width=%22120%22 height=%22140%22/%3E%3Ctext x=%2260%22 y=%2270%22 fill=%22%23999%22 text-anchor=%22middle%22 font-size=%2214%22%3E圖片未載入%3C/text%3E%3C/svg%3E'">
+                    </div>
+                    <div class="role-card-content">
+                        <h3>${role.name}</h3>
+                        <p><strong>專長領域：</strong>${role.field}</p>
+                        <p><strong>專長能力：</strong>${role.ability}</p>
+                    </div>
                 `;
                 card.onclick = (e) => {
                     // 取消所有選中的狀態
@@ -367,7 +452,29 @@
             gameState.score = 0;
             gameState.abilitiesUsed = { 0: false, 1: false, 2: false };
             showScreen('game-screen');
+            
+            // 顯示角色立繪
+            displayCharacterImage();
+            
             renderGame();
+        }
+
+        // 顯示角色立繪的函式
+        function displayCharacterImage() {
+            const roleImages = {
+                '溪哥': '1.png',
+                '阿文': '2.png',
+                '阿路': '3.png',
+                '小雅': '4.png'
+            };
+            
+            const characterDisplay = document.getElementById('game-character-display');
+            const imageName = roleImages[gameState.selectedRoleKey];
+            
+            characterDisplay.innerHTML = `
+                <img src="assets/${imageName}" alt="${gameState.selectedRoleKey}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22240%22%3E%3Crect fill=%22%23444%22 width=%22180%22 height=%22240%22/%3E%3Ctext x=%2290%22 y=%22120%22 fill=%22%23999%22 text-anchor=%22middle%22 font-size=%2214%22%3E圖片未載入%3C/text%3E%3C/svg%3E'">
+            `;
+            characterDisplay.style.display = 'flex';
         }
 
         // 渲染遊戲畫面
