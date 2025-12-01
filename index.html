@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>石碇記憶：山城與溪流的喵對話</title>
+    <title>石碇記憶：山城貓咪的邀請函</title>
     <style>
-        /* CSS 樣式 (維持原樣) */
+        /* CSS 樣式 */
         body {
             font-family: "Microsoft JhengHei", Arial, sans-serif;
-            background: linear-gradient(rgba(10,10,10,0.7), rgba(25,50,50,0.6)), url('assets/bg.jpg') center/cover fixed no-repeat;
-            color: #e0e0e0;
+            background: linear-gradient(rgba(20,30,40,0.7), rgba(40,30,20,0.6)), url('assets/bg.jpg') center/cover fixed no-repeat;
+            color: #f0f0f0;
             margin: 0;
             padding: 20px;
             min-height: 100vh;
@@ -20,10 +20,10 @@
         #game-container {
             width: 100%;
             max-width: 900px;
-            background-color: rgba(30,30,30,0.85); 
-            -webkit-backdrop-filter: blur(6px);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255,255,255,0.1);
+            background-color: rgba(40, 40, 40, 0.9); 
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             padding: 40px;
@@ -38,16 +38,18 @@
         }
  
         h1 {
-            color: #64b5f6;
+            color: #ffcc80;
             text-align: center;
             margin-bottom: 10px;
         }
         .subtitle {
             text-align: center;
-            color: #aaa;
+            color: #ddd;
             font-style: italic;
             margin-bottom: 30px;
             display: block;
+            font-size: 1.1em;
+            letter-spacing: 1px;
         }
 
         h2 {
@@ -58,7 +60,7 @@
         }
         .screen {
             display: none;
-            animation: fadeIn 0.4s ease-in-out;
+            animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -67,7 +69,7 @@
         
         .btn {
             background-color: #ffb74d;
-            color: #222;
+            color: #333;
             border: none;
             padding: 12px 30px;
             text-align: center;
@@ -100,16 +102,147 @@
             opacity: 0.5;
             cursor: not-allowed;
             box-shadow: none;
+            pointer-events: none;
         }
 
         .story-box {
             padding: 20px;
-            background-color: rgba(0,0,0,0.2);
-            border-left: 4px solid #64b5f6;
+            background-color: rgba(255,255,255,0.1);
+            border-left: 4px solid #ffb74d;
             border-radius: 4px;
             margin-bottom: 25px;
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 1.05em;
+        }
+
+        .coupon-box {
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed #ffb74d;
+            margin: 20px auto;
+            max-width: 400px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .coupon-title {
+            color: #e65100;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e65100;
+            display: inline-block;
+        }
+        .coupon-code {
+            background: #eee;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .sdg-tag {
+            display: inline-block;
+            font-size: 0.8em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: white;
+            margin-right: 8px;
+            vertical-align: middle;
+            font-weight: normal;
+        }
+        .sdg-15 { background-color: #56C02B; }
+        .sdg-11 { background-color: #FD9D24; }
+        .sdg-8 { background-color: #A21942; }
+        .sdg-4 { background-color: #C5192D; }
+        .sdg-6 { background-color: #26BDE2; }
+        .sdg-17 { background-color: #19486A; }
+
+        .explanation-box {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #81c784;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.95em;
+            color: #eee;
+            text-align: left;
+            display: none;
+            line-height: 1.6;
+        }
+        .explanation-title {
+            font-weight: bold;
+            color: #81c784;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Overlay */
+        #victory-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+        
+        #victory-overlay.fade-in {
+            display: flex;
+            animation: overlayFadeIn 0.5s forwards;
+        }
+        
+        #victory-overlay.fade-out {
+            animation: overlayFadeOut 0.5s forwards;
+        }
+
+        @keyframes overlayFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes overlayFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        #victory-content {
+            text-align: center;
+            transform: scale(0.8);
+            animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popUp {
+            to { transform: scale(1); }
+        }
+
+        #victory-content img {
+            max-width: 80%;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 183, 77, 0.6);
+            margin-bottom: 20px;
+        }
+
+        #victory-content h2 {
+            color: #ffb74d;
+            font-size: 2em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        #victory-content p {
+            color: #fff;
+            font-size: 1.2em;
+            margin-top: 10px;
         }
 
         #role-selection-grid {
@@ -180,6 +313,7 @@
             font-weight: bold;
             margin-bottom: 20px;
             color: #fff;
+            line-height: 1.5;
         }
         .options-list {
             list-style: none;
@@ -293,6 +427,15 @@
     </style>
 </head>
 <body>
+    
+    <div id="victory-overlay">
+        <div id="victory-content">
+            <img src="assets/winner.gif" alt="Winner Animation">
+            <h2>🎉 拼圖收集完成！</h2>
+            <p>正在為您開啟前往石碇的通道...</p>
+        </div>
+    </div>
+
     <div id="outer-wrap">
 
     <div id="game-container">
@@ -300,26 +443,26 @@
             <h1>
                 <img id="site-logo" src="assets/logo.png" alt="石碇記憶" style="max-width: 320px; width: 100%; height: auto; display: block; margin: 0 auto;">
             </h1>
-            <span class="subtitle">— 尋找山城與溪流失落的連結 —</span>
+            <span class="subtitle">— 跟隨貓咪足跡，重啟山城記憶 —</span>
         </header>
 
         <div id="start-screen" class="screen">
-            <h2>📜 前言：貓咪的呼喚</h2>
+            <h2>📜 前言：來自山城的邀請</h2>
             <div class="story-box">
-                <p>你是一位對地方文史充滿好奇的考察者。</p>
-                <p>最近，你收到了一份來自新北市石碇區的神秘邀請。信上說，流經山城的「文山溪」最近變得沉默了，需要有人來解開土地的記憶封印。</p>
-                <p>當你站在古老的「不見天街」口時，幾隻眼神充滿靈性的<strong>貓咪</strong>悄悄圍繞著你。傳說中，牠們是守護這座山城記憶的精靈。</p>
-                <p>為了聽懂山城的聲音，你必須選擇一位最投緣的<strong>「在地喵夥伴」</strong>，在牠的帶領下，展開一場穿梭黑金歲月與清澈溪流的冒險。</p>
+                <p>親愛的旅人，你好：</p>
+                <p>你或許聽過石碇，知道那裡有老街與溪流。但最近，文山溪的水聲變得有些微弱，像是有些老故事快要被遺忘了。</p>
+                <p>住在這裡的四隻<strong>「守護貓咪」</strong>希望能邀請真正懂這裡的人，參加一場特別的<strong>「山城見面會」</strong>。</p>
+                <p>但入場券藏在過往的時光裡。你願意成為我們的夥伴，一起找回失落的歷史、生態與建築記憶，並獲得這張珍貴的入場券嗎？</p>
             </div>
             <div style="text-align: center;">
-                <p><strong>行動目標：</strong> 選擇一個在地貓夥伴幫助你通過三道關卡 收集記憶的碎片!</p>
-                <button class="btn" onclick="goToRoleSelection()">出發尋找喵夥伴</button>
+                <p><strong>旅程目標：</strong> 收集三塊記憶拼圖，通過最終的行前確認，即可獲得<strong>「不見天街-神秘見面禮」</strong>！</p>
+                <button class="btn" onclick="goToRoleSelection()">接受邀請，尋找嚮導</button>
             </div>
         </div>
 
         <div id="select-role-screen" class="screen">
-            <h2>🐾 選擇你的在地喵夥伴</h2>
-            <p>請選擇一位與你結伴同行的貓咪，牠們各自代表了石碇不同的文化記憶：</p>
+            <h2>🐾 選擇你的嚮導貓咪</h2>
+            <p>這幾位貓咪是石碇最資深的在地居民，請選擇一位最投緣的夥伴陪你探索：</p>
             
             <div id="role-selection-grid">
                 </div>
@@ -343,12 +486,17 @@
                 <ul id="options-list" class="options-list">
                     </ul>
                 
+                <div id="explanation-area" class="explanation-box">
+                    <span class="explanation-title">💡 貓咪嚮導的小知識：</span>
+                    <span id="explanation-text"></span>
+                </div>
+
                 <div id="ability-ui" class="ability-box">
                     <div class="ability-info">
-                        <strong>喵夥伴支援：</strong> <span id="current-ability"></span>
-                        <div style="font-size: 0.85em; margin-top: 5px; color: #aaa;">(注: 喵夥伴只能在牠熟悉的領域伸出援手，每關限用一次。)</div>
+                        <strong>貓掌支援：</strong> <span id="current-ability"></span>
+                        <div style="font-size: 0.85em; margin-top: 5px; color: #aaa;">(注: 貓咪只能在熟悉的領域幫忙排除選項，每關限用一次。)</div>
                     </div>
-                    <button class="ability-btn" onclick="useAbility()">請求貓掌協助</button>
+                    <button class="ability-btn" onclick="useAbility()">呼叫貓咪幫忙</button>
                 </div>
             </div>
 
@@ -361,15 +509,24 @@
         </div>
 
         <div id="final-screen" class="screen" style="text-align: center;">
-            <h2>🎉 旅程終章：重現的光影</h2>
+            <h2>🎉 旅程終章：前往不見天街</h2>
             <div class="story-box" style="text-align: left;">
-                <p>恭喜！在你與好夥伴<span id="final-partner-name" class="fragment"></span>的共同努力下，你們成功收集了關於「黑金歲月」、「溪流生態」與「山城建築」的三塊關鍵記憶碎片。</p>
-                <p>站在重新被人們珍視的文山溪畔，你看著清澈的溪水映照著吊腳樓的倒影。你們發現，復甦石碇的關鍵，不僅是硬體的修復，更是重新連結人與土地、過去與未來的關係。</p>
-                <p>「喵～」夥伴蹭了蹭你的腳邊，似乎在說：謝謝你記得這裡的故事。</p>
+                <p>恭喜你！你不僅找回了遺失的記憶，更展現了對這片土地的溫柔與尊重。</p>
+                <p>你的貓咪夥伴<span id="final-partner-name" class="fragment"></span>開心地蹭了蹭你的腳邊，牠說：「我們在老街等你喔！」</p>
+                <p>請帶著下方這張<strong>「貓咪的謝禮」</strong>，親自前往石碇的<strong>不見天街</strong>（或指定合作店家），兌換這份心意。</p>
+                
+                <div class="coupon-box">
+                    <div class="coupon-title">🎁 貓夥伴的見面禮</div>
+                    <p style="margin: 5px 0; font-size: 0.9em; color: #555;">憑此畫面可至石碇指定店家兌換：</p>
+                    <div class="coupon-code" id="coupon-code-text">LOADING...</div>
+                    <p style="font-size: 1.1em; color: #e65100; font-weight: bold;">【石碇特色小禮 / 專屬優惠】</p>
+                    <p style="font-size: 0.8em; color: #999;">(請向店家出示此畫面)</p>
+                </div>
+
+                <p style="text-align: center; color: #ffb74d; font-weight: bold;">期待在真實的石碇與你相遇！</p>
             </div>
-            <p style="margin-top: 30px; font-weight: bold; color: #ffb74d;">感謝你為石碇山城所做的一切！</p>
              <div style="margin-top: 30px;">
-                <button class="btn btn-secondary" onclick="location.reload()">再次造訪石碇 (重新開始)</button>
+                <button class="btn btn-secondary" onclick="location.reload()">重新開始旅程</button>
             </div>
         </div>
 
@@ -379,71 +536,81 @@
     <div id="game-character-display" style="display: none;"></div>
 
     <script>
+        // --- 隨機回饋語錄 ---
+        const feedbackMessages = {
+            correct: [
+                "✅ 答對了！喵！真不愧是我的好夥伴！",
+                "✅ 太棒了！你的觀察力真敏銳！",
+                "✅ 正確！我們離真相越來越近了！",
+                "✅ 喵嗚～選得好！這就是正確答案！",
+                "✅ 賓果！看來你很懂石碇喔！"
+            ],
+            wrong: [
+                "❌ 喵嗚...這題有點難，正確答案其實是 ",
+                "❌ 哎呀，差一點點！正確答案是 ",
+                "❌ 喵？好像不太對喔，答案應該是 ",
+                "❌ 沒關係，我們學到了一課。正確是 ",
+                "❌ 咦？這題的陷阱有點深。答案是 "
+            ]
+        };
+
         // --- 遊戲資料 ---
         const gameData = {
             partners: {
-                '茶米': { 
-                    key: '茶米', name: '茶米 (生態觀察家)', 
-                    desc: '名字取自石碇著名的「包種茶」。熱愛大自然，對溪流生態瞭若指掌。',
-                    ability: '【自然感應】刪去兩個錯誤選項', field: '溪流生態與環境指標', specialtyQ: ['2-1', '2-3', '2-5'] 
-                },
-                '煤球': { 
-                    key: '煤球', name: '煤球 (文史挖掘者)', 
-                    desc: '全身黑得發亮，象徵石碇的「黑金」歲月。熟知所有關於礦坑的老故事。',
-                    ability: '【歷史回溯】刪去兩個錯誤選項', field: '礦業歷史與聚落文化', specialtyQ: ['1-1', '1-3', '3-2'] 
-                },
-                '豆豆': { 
-                    key: '豆豆', name: '豆豆 (老街嚮導)', 
-                    desc: '名字來自石碇知名的「百年豆腐」。是個吃貨，最懂老街的建築與空間秘密。',
-                    ability: '【地景嗅覺】刪去兩個錯誤選項', field: '特殊建築與地理空間', specialtyQ: ['1-2', '3-1', '3-4'] 
-                },
-                '小石': { 
-                    key: '小石', name: '小石 (創生設計師)', 
-                    desc: '取自「石」碇之名。喜歡新舊融合的事物，對社區未來的發展特別有想法。',
-                    ability: '【創意腦力】刪去兩個錯誤選項', field: '社區創生與未來發展', specialtyQ: ['2-2', '2-4', '3-3'] 
-                }
+                '茶米': { key: '茶米', imgBase: '1', name: '茶米 (生態觀察家)', desc: '名字取自石碇著名的「包種茶」。熱愛大自然，對溪流生態瞭若指掌。', ability: '【自然感應】刪去兩個錯誤選項', field: '溪流生態與環境指標', specialtyQ: ['2-1', '2-3', '2-5', '4-2'] },
+                '煤球': { key: '煤球', imgBase: '2', name: '煤球 (文史挖掘者)', desc: '全身黑得發亮，象徵石碇的「黑金」歲月。熟知所有關於礦坑的老故事。', ability: '【歷史回溯】刪去兩個錯誤選項', field: '礦業歷史與聚落文化', specialtyQ: ['1-1', '1-3', '3-2', '4-1'] },
+                '豆豆': { key: '豆豆', imgBase: '3', name: '豆豆 (老街嚮導)', desc: '名字來自石碇知名的「百年豆腐」。是個吃貨，最懂老街的建築與空間秘密。', ability: '【地景嗅覺】刪去兩個錯誤選項', field: '特殊建築與地理空間', specialtyQ: ['1-2', '3-1', '3-4', '4-1'] },
+                '小石': { key: '小石', imgBase: '4', name: '小石 (創生設計師)', desc: '取自「石」碇之名。喜歡新舊融合的事物，對社區未來的發展特別有想法。', ability: '【創意腦力】刪去兩個錯誤選項', field: '社區創生與未來發展', specialtyQ: ['2-2', '2-4', '3-3', '4-3'] }
             },
             stages: [
                 {
-                    id: 0, title: '第一關：黑金歲月的餘暉 (礦業記憶)', fragment: '【黑金記憶碎片】',
+                    id: 0, title: '第一站：黑金歲月的餘暉 (歷史記憶)', fragment: '【歷史拼圖】',
                     questions: [
-                        { q: '1-1. 石碇曾是北台灣重要的煤礦產區。在礦業鼎盛時期，為了將山裡的煤礦運送出去，最主要的交通工具是什麼？', options: ['A. 載重卡車。', 'B. 輕便鐵道(台車)與人力。', 'C. 空中纜車。', 'D. 透過文山溪水運。'], answer: 'B' },
-                        { q: '1-2. 礦工的工作環境極度艱險。當時在礦坑口常會祭拜哪位神祇，祈求進入地底後能平安歸來？', options: ['A. 媽祖。', 'B. 關聖帝君。', 'C. 土地公。', 'D. 清水祖師。'], answer: 'C' },
-                        { q: '1-3. 隨著1970年代後石油取代煤炭、進口煤競爭，以及幾次重大的礦災，台灣煤礦業走向沒落。這對石碇造成了什麼直接影響？', options: ['A. 轉型為高科技園區。', 'B. 大量青壯年人口外移尋找工作機會。', 'C. 空氣品質立刻變好，吸引大量養老人口。', 'D. 房價飆漲。'], answer: 'B' },
-                        { q: '1-4. 如今在石碇山區步道健行時，偶爾能看見被植物覆蓋的廢棄坑口遺跡。面對這些遺跡，我們應該抱持什麼態度？', options: ['A. 視為危險垃圾，應盡快填平。', 'B. 把它們開發成主題樂園鬼屋。', 'C. 視為珍貴的產業文化地景，進行適度保存與解說。', 'D. 進入探險尋寶。'], answer: 'C' }
+                        { q: '1-1. 石碇曾是北台灣重要的煤礦產區。在還沒有大馬路的年代，要將山裡的煤礦運送出去，最主要是靠什麼交通工具？', options: ['A. 大卡車。', 'B. 輕便鐵道(台車)與人力。', 'C. 空中纜車。', 'D. 透過文山溪水運。'], answer: 'B', sdg: 'sdg-8', sdgText: 'SDG 8 就業與經濟', explanation: '早期山區道路未開通，煤礦運輸主要倚靠鋪設輕便鐵軌的人力台車，這也是當時石碇常見的風景。' },
+                        { q: '1-2. 礦工的工作非常危險，進入漆黑的礦坑前，通常會祭拜哪位神祇祈求平安歸來？', options: ['A. 媽祖。', 'B. 關聖帝君。', 'C. 土地公。', 'D. 清水祖師。'], answer: 'C', sdg: 'sdg-11', sdgText: 'SDG 11 永續城鄉', explanation: '土地公被視為地方守護神，對於在「地底下」工作的礦工來說，是心靈最重要的寄託。' },
+                        { q: '1-3. 1970年代後，石碇的煤礦產業逐漸沒落，這對當地造成了什麼最直接的影響？', options: ['A. 變成高科技園區。', 'B. 青壯年人口為了工作被迫外移。', 'C. 空氣變好，大家立刻回來養老。', 'D. 房價突然暴漲。'], answer: 'B', sdg: 'sdg-8', sdgText: 'SDG 8 就業與經濟', explanation: '產業沒落直接導致工作機會消失，青壯年人口為了生計被迫外移，是許多礦業聚落共同的傷痛。' },
+                        { q: '1-4. 如果在山上發現被植物覆蓋的舊礦坑口，我們應該抱持什麼態度？', options: ['A. 當作垃圾場。', 'B. 改建成遊樂園鬼屋。', 'C. 視為珍貴的文化地景，加以保存解說。', 'D. 進去探險尋寶。'], answer: 'C', sdg: 'sdg-11', sdgText: 'SDG 11 文化保存', explanation: '這些遺跡見證了台灣能源發展的歷史，是珍貴的文化資產，也是石碇故事的一部分。' }
                     ]
                 },
                 {
-                    id: 1, title: '第二關：溪流的無聲告白 (生態環境)', fragment: '【清溪生態碎片】',
+                    id: 1, title: '第二站：聽見溪流的聲音 (生態環境)', fragment: '【生態拼圖】',
                     questions: [
-                        { q: '2-1. 流經石碇老街的核心溪流是哪一條？它是當地居民生活的重要命脈。', options: ['A. 淡水河。', 'B. 基隆河。', 'C. 文山溪 (景美溪上游)。', 'D. 北勢溪。'], answer: 'C' },
-                        { q: '2-2. 過去的礦業活動可能對溪流留下長期的影響。下列何者「不是」礦區常見的環境後遺症？', options: ['A. 廢礦堆在雨後沖刷出酸性廢水。', 'B. 溪流中重金屬含量潛在偏高。', 'C. 溪水溫度異常升高變成溫泉。', 'D. 泥沙淤積影響底棲生物。'], answer: 'C' },
-                        { q: '2-3. 在進行溪流生態復育時，我們希望能看到指標性生物回歸。如果你在文山溪裡發現了許多「苦花魚」或「石賓」，這通常代表什麼意義？', options: ['A. 水質非常混濁髒污。', 'B. 這裡有人在進行商業養殖。', 'C. 水質清澈溶氧高，生態狀況良好。', 'D. 溪流已經完全陸域化。'], answer: 'C' },
-                        { q: '2-4. 為了保護石碇的溪流環境，身為遊客的我們，下列哪個行為是正確的？', options: ['A. 將烤肉剩下的食物倒入溪中餵魚。', 'B. 使用對環境友善的防曬乳，並將垃圾自行帶走。', 'C. 隨意搬動溪中石塊捕捉蝦蟹。', 'D. 在溪邊使用化學清潔劑洗滌餐具。'], answer: 'B' }
+                        { q: '2-1. 流經石碇老街的那條美麗溪流，是當地居民生活的重要夥伴，它的名字是？', options: ['A. 淡水河。', 'B. 基隆河。', 'C. 文山溪 (景美溪上游)。', 'D. 北勢溪。'], answer: 'C', sdg: 'sdg-6', sdgText: 'SDG 6 淨水與衛生', explanation: '流經石碇的是景美溪的上游，在地人常稱之為文山溪或石碇溪，是水源保護區的重要水脈。' },
+                        { q: '2-2. 以前的採礦活動可能會留下一些環境痕跡，下列哪一個「不是」礦區常見的問題？', options: ['A. 廢礦堆產生的酸性水。', 'B. 重金屬殘留。', 'C. 溪水變成溫泉。', 'D. 泥沙淤積。'], answer: 'C', sdg: 'sdg-15', sdgText: 'SDG 15 陸域生態', explanation: '煤礦開採並不會讓溪水變成溫泉喔！主要問題是廢礦堆接觸空氣雨水後產生的化學反應。' },
+                        { q: '2-3. 如果你在溪裡看到很多「苦花魚」在閃閃發光，這代表這裡的水質如何？', options: ['A. 水質很髒。', 'B. 這裡有人在養魚。', 'C. 水質清澈、含氧量高，生態很棒。', 'D. 溪流快要乾枯了。'], answer: 'C', sdg: 'sdg-15', sdgText: 'SDG 15 生物多樣性', explanation: '苦花魚（鏟頜魚）對水質要求很高，只棲息在低溫、高溶氧的清澈溪流中，是良好的環境指標。' },
+                        { q: '2-4. 來石碇玩的時候，怎麼做才是愛護溪流的好旅人？', options: ['A. 把吃剩的食物丟給魚吃。', 'B. 使用環保防曬乳，垃圾自己帶走。', 'C. 隨便搬動石頭抓蝦子。', 'D. 在溪邊洗碗。'], answer: 'B', sdg: 'sdg-6', sdgText: 'SDG 6 水資源保護', explanation: '愛它就不要傷害它。無痕山林（LNT）原則強調把自己帶來的東西帶走，不留痕跡。' }
                     ]
                 },
                 {
-                    id: 2, title: '第三關：山城的空間智慧 (聚落與創生)', fragment: '【山城建築碎片】',
+                    id: 2, title: '第三站：山城的建築智慧 (聚落創生)', fragment: '【建築拼圖】',
                     questions: [
-                        { q: '3-1. 石碇東街著名的「吊腳樓」建築景觀，其形成的根本地理原因是什麼？', options: ['A. 為了美觀與藝術感。', 'B. 腹地狹小，為了爭取空間而將房屋懸空蓋在溪床上。', 'C. 為了防禦敵人的進攻。', 'D. 模仿國外的水上屋設計。'], answer: 'B' },
-                        { q: '3-2. 石碇特殊的「不見天街」，是指房屋二樓空間向外延伸覆蓋了一樓的街道，形成了有遮蔽的通道。這種設計在多雨的山城有什麼實際功能？', options: ['A. 讓行人與商家可以遮風避雨進行商業活動。', 'B. 完全為了阻擋陽光照射。', 'C. 增加建築結構的重量。', 'D. 為了在二樓種植植物。'], answer: 'A' },
-                        { q: '3-3. 近年來，許多團隊回到石碇推動地方創生。下列哪一項活動「最不符合」永續創生的精神？', options: ['A. 開發結合在地茶葉與桂花特色的創意商品。', 'B. 舉辦導覽活動，培訓在地長輩訴說自己的故事。', 'C. 引進與當地文化無關的大型連鎖遊樂場。', 'D. 整修老屋空間，作為藝文交流的據點。'], answer: 'C' },
-                        { q: '3-4. 走在石碇老街，你會發現這裡的建築與空間充滿了「人味」與歷史痕跡。想要真正體驗石碇的魅力，最好的方式是？', options: ['A. 拍完照就立刻離開。', 'B. 慢下來，走入巷弄，與在地居民互動對話。', 'C. 只待在冷氣房裡。', 'D. 抱怨這裡不如都市便利。'], answer: 'B' }
+                        { q: '3-1. 石碇東街有一種很特別的建築叫「吊腳樓」，房子懸空在溪床上，原因是？', options: ['A. 為了好看。', 'B. 平地太少，為了爭取空間的生存智慧。', 'C. 為了防禦敵人。', 'D. 模仿國外的設計。'], answer: 'B', sdg: 'sdg-11', sdgText: 'SDG 11 居住環境', explanation: '石碇位於溪谷，腹地極小。居民利用柱子將房屋懸空支撐在河床上，展現了與自然共存的智慧。' },
+                        { q: '3-2. 走在石碇老街，你會發現頭頂有遮蔽，像走在室內一樣，這就是著名的「不見天街」。它的主要功能是？', options: ['A. 讓大家做生意不怕下雨。', 'B. 為了防曬。', 'C. 增加房子重量。', 'D. 種植物用的。'], answer: 'A', sdg: 'sdg-11', sdgText: 'SDG 11 氣候適應', explanation: '山區多雨，「不見天」的設計讓商業活動不受天氣影響，形成了台灣少見的特殊景觀。' },
+                        { q: '3-3. 許多年輕人回到石碇推動「地方創生」，下列哪個做法最能永續發展？', options: ['A. 結合在地茶葉、桂花做創意商品。', 'B. 培訓長輩說故事導覽。', 'C. 引進跟當地無關的大型遊樂場。', 'D. 修復老屋變成藝文空間。'], answer: 'C', sdg: 'sdg-8', sdgText: 'SDG 8 地方創生', explanation: '地方創生強調挖掘「在地特色」。與當地文化脫節的大型設施，往往無法帶來長久的幸福感。' },
+                        { q: '3-4. 想要真正感受石碇的魅力，最好的方式是？', options: ['A. 拍完照就走。', 'B. 慢下來，走進巷弄跟居民聊聊天。', 'C. 躲在冷氣房裡。', 'D. 抱怨這裡沒超商。'], answer: 'B', sdg: 'sdg-4', sdgText: 'SDG 4 終身學習', explanation: '最美的風景是人。透過對話與深度漫遊，才能真正感受到山城的生活溫度。' }
+                    ]
+                },
+                {
+                    id: 3, title: '第四站：出發前的約定 (行前確認)', fragment: '【兌換信物】',
+                    questions: [
+                        { q: '4-1. 【地標確認】要去「不見天街」找禮物，你要認得哪種建築特色才不會迷路？', options: ['A. 到處都是摩天大樓。', 'B. 街道上方被建築覆蓋，看不到天空。', 'C. 金字塔。', 'D. 海底隧道。'], answer: 'B', sdg: 'sdg-11', sdgText: 'SDG 11 觀察', explanation: '沒錯！認明「看不見天空」的街道，就是通往驚喜的入口！' },
+                        { q: '4-2. 【態度確認】當你遇到石碇的貓咪或居民時，什麼樣的態度最受歡迎？', options: ['A. 大聲喧嘩。', 'B. 亂丟垃圾。', 'C. 輕聲細語，保持微笑與尊重。', 'D. 隨便亂摸。'], answer: 'C', sdg: 'sdg-4', sdgText: 'SDG 4 尊重', explanation: '尊重是最好的通行證。友善的旅人，才能看見最美的風景。' },
+                        { q: '4-3. 【最終確認】你已經拿到所有的線索了！請問下一步該怎麼做？', options: ['A. 關掉手機去睡覺。', 'B. 截圖保存兌換券，親自去石碇走走！', 'C. 把它刪掉。', 'D. 覺得無聊。'], answer: 'B', sdg: 'sdg-17', sdgText: 'SDG 17 實踐', explanation: '太棒了！貓咪們已經準備好禮物，期待在石碇與你相見！' }
                     ]
                 }
             ]
         };
 
-        // --- 狀態變數 ---
         let gameState = {
             currentStage: 0,
             currentQuestion: 0,
             fragmentsCollected: 0,
             score: 0,
-            abilitiesUsed: { 0: false, 1: false, 2: false },
+            abilitiesUsed: { 0: false, 1: false, 2: false, 3: false },
             isQuestionLocked: false,
             selectedPartnerKey: null,
-            answers: {} 
+            answers: {},
+            isTransitioning: false 
         };
 
         const elements = {
@@ -452,6 +619,8 @@
             progressText: document.getElementById('progress-text'),
             questionText: document.getElementById('question-text'),
             optionsList: document.getElementById('options-list'),
+            explanationArea: document.getElementById('explanation-area'),
+            explanationText: document.getElementById('explanation-text'),
             abilityUI: document.getElementById('ability-ui'),
             currentAbility: document.getElementById('current-ability'),
             message: document.getElementById('message'),
@@ -461,33 +630,27 @@
             roleSelectionGrid: document.getElementById('role-selection-grid'),
             confirmRoleBtn: document.getElementById('confirm-role-btn'),
             gameCharacterDisplay: document.getElementById('game-character-display'),
-            finalPartnerName: document.getElementById('final-partner-name')
+            finalPartnerName: document.getElementById('final-partner-name'),
+            victoryOverlay: document.getElementById('victory-overlay') 
         };
 
-        // --- History API 核心邏輯 ---
-        
-        // 初始化：取代當前狀態為 start
         window.history.replaceState({ page: 'start-screen' }, '', '');
 
-        // 監聽瀏覽器的上一頁/下一頁事件 (popstate)
         window.addEventListener('popstate', (event) => {
             if (event.state) {
                 handleStateChange(event.state);
             } else {
-                // 如果沒有狀態 (極少見)，預設回首頁
                 showScreen('start-screen');
             }
         });
 
-        // 根據歷史狀態來渲染畫面
         function handleStateChange(state) {
             if (state.page === 'game-screen') {
                 gameState.currentStage = state.stage;
                 gameState.currentQuestion = state.question;
-                // 這裡不呼叫 history.pushState，因為我們是按上一頁回來的
                 showScreen('game-screen');
                 displayCharacterImage();
-                renderGame(false); // false 表示不要再 push 歷史紀錄
+                renderGame(false); 
             } else {
                 showScreen(state.page);
                 if(state.page === 'select-role-screen') {
@@ -503,7 +666,6 @@
             window.scrollTo(0, 0); 
         }
 
-        // 按下「出發尋找」時呼叫
         function goToRoleSelection() {
             history.pushState({ page: 'select-role-screen' }, '', '');
             showScreen('select-role-screen');
@@ -512,15 +674,14 @@
 
         function renderRoleSelection() {
             elements.roleSelectionGrid.innerHTML = '';
-            const roleImages = { '茶米': '1.png', '煤球': '2.png', '豆豆': '3.png', '小石': '4.png' };
-
+            
             Object.values(gameData.partners).forEach(partner => {
                 const card = document.createElement('div');
                 card.className = 'role-card';
                 card.dataset.key = partner.key; 
                 card.innerHTML = `
                     <div class="role-card-image">
-                        <img src="assets/${roleImages[partner.key]}" alt="${partner.name}" onerror="this.style.display='none';this.parentNode.style.backgroundColor='#555';">
+                        <img src="assets/${partner.imgBase}.png" alt="${partner.name}" onerror="this.style.display='none';this.parentNode.style.backgroundColor='#555';">
                     </div>
                     <div class="role-card-content">
                         <h3>${partner.name}</h3>
@@ -550,30 +711,32 @@
             gameState.currentQuestion = 0;
             gameState.fragmentsCollected = 0;
             gameState.score = 0;
-            gameState.abilitiesUsed = { 0: false, 1: false, 2: false };
+            gameState.abilitiesUsed = { 0: false, 1: false, 2: false, 3: false };
             gameState.answers = {}; 
+            gameState.isTransitioning = false;
             
-            // Push 初始遊戲狀態
             history.pushState({ page: 'game-screen', stage: 0, question: 0 }, '', '');
             
             showScreen('game-screen');
             displayCharacterImage(); 
-            renderGame(false); // 狀態已手動 push，render 內不需再 push
+            renderGame(false); 
         }
 
-        function displayCharacterImage() {
-            const roleImages = { '茶米': '1.png', '煤球': '2.png', '豆豆': '3.png', '小石': '4.png' };
-            const imageName = roleImages[gameState.selectedPartnerKey];
-            elements.gameCharacterDisplay.innerHTML = `<img src="assets/${imageName}" alt="夥伴立繪" onerror="this.style.display='none'">`;
+        function displayCharacterImage(isSmile = false) {
+            const partner = gameData.partners[gameState.selectedPartnerKey];
+            const baseName = partner.imgBase; 
+            const fileName = isSmile ? `${baseName}_smile.png` : `${baseName}.png`;
+            
+            elements.gameCharacterDisplay.innerHTML = `<img src="assets/${fileName}" alt="夥伴立繪" onerror="this.style.display='none'">`;
         }
 
-        // renderGame 增加 pushHistory 參數控制是否要新增歷史紀錄
         function renderGame(pushHistory = true) {
+            displayCharacterImage(false);
+
             if (gameState.currentStage >= gameData.stages.length) {
                 return showFinalScreen();
             }
 
-            // 如果需要記錄歷史 (例如按下一題時)，執行 pushState
             if (pushHistory) {
                 history.pushState({ 
                     page: 'game-screen', 
@@ -590,18 +753,31 @@
 
             elements.stageTitle.innerText = `${stage.title}`;
             elements.partnerInfoText.innerHTML = `你的喵夥伴：<strong>${partner.name.split(' ')[0]}</strong>`;
-            elements.progressText.innerText = `進度：第 ${gameState.currentStage + 1} 關 - 第 ${gameState.currentQuestion + 1}/${stage.questions.length} 題`;
-            elements.questionText.innerText = currentQ.q; 
+            
+            let collectionStatus = "";
+            if (gameState.fragmentsCollected >= 3) {
+                 collectionStatus = "✨ 拼圖完成，準備領取禮物 ✨";
+            } else {
+                 collectionStatus = `已收集 ${gameState.fragmentsCollected} / 3 拼圖`;
+            }
+            elements.progressText.innerText = `${collectionStatus} | 關卡 ${gameState.currentStage + 1} - 題 ${gameState.currentQuestion + 1}/${stage.questions.length}`;
+
+            let sdgHtml = '';
+            if (currentQ.sdg) {
+                sdgHtml = `<span class="sdg-tag ${currentQ.sdg}">${currentQ.sdgText}</span><br>`;
+            }
+            elements.questionText.innerHTML = sdgHtml + currentQ.q; 
             
             elements.message.innerText = '';
             elements.message.style.backgroundColor = 'transparent';
+            elements.explanationArea.style.display = 'none'; 
             elements.nextQBtn.classList.add('disabled');
             elements.nextQBtn.innerText = "繼續前進 »";
             
-            // 控制上一題按鈕：如果是第一題，禁用；否則啟用
+            elements.nextQBtn.classList.remove('processing'); 
+
             if (gameState.currentQuestion === 0 && gameState.currentStage === 0) {
-                // 第一關第一題，上一頁會回到角色選擇 (由瀏覽器控制)
-                 elements.prevQBtn.classList.remove('disabled'); // 讓它能觸發 history.back()
+                 elements.prevQBtn.classList.remove('disabled'); 
                  elements.prevQBtn.innerHTML = "&laquo; 回選角";
             } else {
                  elements.prevQBtn.classList.remove('disabled');
@@ -611,13 +787,18 @@
             if (recordedAnswer) {
                 gameState.isQuestionLocked = true;
                 elements.nextQBtn.classList.remove('disabled'); 
+                
+                elements.explanationText.innerText = currentQ.explanation;
+                elements.explanationArea.style.display = 'block';
+
                 const isCorrect = (recordedAnswer === currentQ.answer);
                 if (isCorrect) {
-                    elements.message.innerText = '✅ (已作答) 回答正確！喵！';
+                    elements.message.innerText = '✅ (已作答) 答對了！';
                     elements.message.style.backgroundColor = 'rgba(212, 237, 218, 0.9)';
                     elements.message.style.color = '#155724';
+                    displayCharacterImage(true); 
                 } else {
-                    elements.message.innerText = `❌ (已作答) 正確答案是 ${currentQ.answer}。`;
+                    elements.message.innerText = `❌ (已作答) 喵嗚...正確是 ${currentQ.answer}。`;
                     elements.message.style.backgroundColor = 'rgba(248, 215, 218, 0.9)';
                     elements.message.style.color = '#721c24';
                 }
@@ -627,6 +808,11 @@
 
             renderOptions(currentQ, recordedAnswer);
             renderAbilityUI(stage, currentQ, partner);
+            
+            // 每次渲染新題目都滾動到頂部
+            if (!recordedAnswer) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         function renderOptions(question, recordedAnswer) {
@@ -655,17 +841,17 @@
             elements.currentAbility.innerText = partner.ability;
 
             if (gameState.abilitiesUsed[stage.id]) {
-                abilityBtn.innerText = '本關喵喵支援已用過';
+                abilityBtn.innerText = '本關貓咪已幫忙過';
                 abilityBtn.classList.add('disabled');
             } else if (isSpecialtyQ) {
-                abilityBtn.innerText = `請求 ${partner.name.split(' ')[0]} 協助`;
+                abilityBtn.innerText = `呼叫 ${partner.name.split(' ')[0]} 幫忙`;
                 if (!gameState.isQuestionLocked) {
                     abilityBtn.classList.remove('disabled');
                 } else {
                     abilityBtn.classList.add('disabled');
                 }
             } else {
-                abilityBtn.innerText = '此題非喵夥伴熟悉領域';
+                abilityBtn.innerText = '此題非貓咪熟悉領域';
                 abilityBtn.classList.add('disabled');
             }
         }
@@ -708,6 +894,15 @@
             gameState.isQuestionLocked = true;
             elements.nextQBtn.classList.remove('disabled');
 
+            // 顯示詳解
+            elements.explanationText.innerText = currentQ.explanation;
+            elements.explanationArea.style.display = 'block';
+            
+            // 自動滾動到詳解區域 (UX優化)
+            setTimeout(() => {
+                elements.explanationArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+
             Array.from(elements.optionsList.children).forEach(item => {
                 item.classList.add('disabled');
                 if (item.innerText.charAt(0) === currentQ.answer) {
@@ -719,45 +914,76 @@
 
             if (isCorrect) {
                 gameState.score++;
-                elements.message.innerText = '✅ 答對了！喵！';
+                displayCharacterImage(true); 
+                
+                const randomMsg = feedbackMessages.correct[Math.floor(Math.random() * feedbackMessages.correct.length)];
+                elements.message.innerText = randomMsg;
                 elements.message.style.backgroundColor = 'rgba(212, 237, 218, 0.9)';
                 elements.message.style.color = '#155724';
             } else {
-                elements.message.innerText = `❌ 喵嗚...答錯了。正確答案是 ${currentQ.answer}。`;
+                const randomMsg = feedbackMessages.wrong[Math.floor(Math.random() * feedbackMessages.wrong.length)];
+                elements.message.innerText = `${randomMsg}${currentQ.answer}。`;
                 elements.message.style.backgroundColor = 'rgba(248, 215, 218, 0.9)';
                 elements.message.style.color = '#721c24';
             }
         }
 
         function nextQuestion() {
-            if (!gameState.isQuestionLocked) return;
+            if (!gameState.isQuestionLocked || gameState.isTransitioning) return;
+
+            elements.nextQBtn.classList.add('processing', 'disabled');
+            gameState.isTransitioning = true; 
 
             gameState.currentQuestion++;
             const stage = gameData.stages[gameState.currentStage];
 
             if (gameState.currentQuestion >= stage.questions.length) {
                 gameState.fragmentsCollected++;
-                elements.message.innerText = `🎉 關卡完成！獲得${stage.fragment}。準備前往下一站...`;
+                
+                let transitionMsg = `🎉 關卡完成！獲得${stage.fragment}。準備前往下一站...`;
+                if (gameState.currentStage === 2) { 
+                    transitionMsg = `🎉 拼圖收集完成！進入最後確認...`;
+                }
+
+                elements.message.innerText = transitionMsg;
                 elements.message.style.backgroundColor = 'rgba(255, 183, 77, 0.9)';
-                elements.nextQBtn.innerText = "前往下一關 »";
+                elements.nextQBtn.innerText = "進入下一階段 »";
                 
                 setTimeout(() => {
                     gameState.currentStage++;
                     gameState.currentQuestion = 0;
-                    renderGame(); // 這裡會自動 push 歷史紀錄
-                }, 1500);
+                    gameState.isTransitioning = false; 
+                    renderGame(); 
+                }, 2000);
             } else {
-                renderGame(); // 這裡會自動 push 歷史紀錄
+                gameState.isTransitioning = false;
+                renderGame(); 
             }
         }
         
         function showFinalScreen() {
+            elements.victoryOverlay.style.display = 'flex'; 
+            elements.victoryOverlay.classList.remove('fade-out');
+            elements.victoryOverlay.classList.add('fade-in');
+
             elements.finalPartnerName.innerText = gameData.partners[gameState.selectedPartnerKey].name.split(' ')[0];
-            history.pushState({ page: 'final-screen' }, '', '');
-            showScreen('final-screen');
+            const today = new Date();
+            const dateStr = `${today.getMonth()+1}${today.getDate()}`;
+            const randomCode = Math.floor(Math.random() * 9000) + 1000;
+            document.getElementById('coupon-code-text').innerText = `SD-${dateStr}-${randomCode}`;
+
+            setTimeout(() => {
+                elements.victoryOverlay.classList.remove('fade-in');
+                elements.victoryOverlay.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    elements.victoryOverlay.style.display = 'none'; 
+                    history.pushState({ page: 'final-screen' }, '', '');
+                    showScreen('final-screen');
+                }, 500); 
+            }, 3000);
         }
 
-        // 初始載入
         showScreen('start-screen');
 
     </script>
